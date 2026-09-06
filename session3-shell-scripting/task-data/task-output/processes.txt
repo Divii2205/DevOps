@@ -1,0 +1,28 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  1.2  0.1  24332 14544 ?        Ss   10:26   0:00 /sbin/init
+root           2  0.0  0.0   3120  1920 ?        Sl   10:26   0:00 /init
+root           7  0.0  0.0   3120  1792 ?        Sl   10:26   0:00 plan9 --control-socket 7 --log-level 4 --server-fd 8 --pipe-fd 10 --log-truncate
+root          47  0.3  0.1  42208 15488 ?        S<s  10:26   0:00 /usr/lib/systemd/systemd-journald
+systemd+      81  0.1  0.1  22400 13824 ?        Ss   10:26   0:00 /usr/lib/systemd/systemd-resolved
+root          89  0.4  0.1  35180 11776 ?        Ss   10:26   0:00 /usr/lib/systemd/systemd-udevd
+root         138  0.0  0.0   2880  1920 ?        Ss   10:26   0:00 /bin/sh /usr/lib/systemd/scripts/chronyd-starter.sh -n -F 1
+root         139  0.0  0.0   4464  2688 ?        Ss   10:26   0:00 /usr/sbin/cron -f -P
+message+     140  0.0  0.0   8780  5120 ?        Ss   10:26   0:00 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root         149  0.5  0.3  44080 28924 ?        Ss   10:26   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root         165  0.1  0.1  18416  8960 ?        Ss   10:26   0:00 /usr/lib/systemd/systemd-logind
+root         176  0.2  0.1 1792292 14336 ?       Ssl  10:26   0:00 /usr/libexec/wsl-pro-service
+syslog       189  0.1  0.0 220532  5376 ?        Ssl  10:26   0:00 /usr/sbin/rsyslogd -n -iNONE
+root         215  0.0  0.0   5528  2816 hvc0     Ss+  10:26   0:00 /usr/sbin/agetty --noreset --noclear --issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d --keep-baud 115200,57600,38400,9600 - vt220
+_chrony      219  0.1  0.1  23860 10624 ?        S    10:26   0:00 /usr/sbin/chronyd -n -F 1 -x
+_chrony      225  0.0  0.0  12080  2248 ?        S    10:26   0:00 /usr/sbin/chronyd -n -F 1 -x
+root         230  0.4  0.4 123444 32128 ?        Ssl  10:26   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root         234  0.0  0.0   5484  2688 tty1     Ss+  10:26   0:00 /usr/sbin/agetty --noreset --noclear --issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d - linux
+root         313  0.0  0.0   3128   896 ?        Ss   10:26   0:00 /init
+root         316  0.0  0.0   3144  1156 ?        S    10:26   0:00 /init
+user         319  0.1  0.0   6368  5376 pts/0    Ss   10:26   0:00 -bash
+root         323  0.0  0.0   8628  5248 ?        Ss   10:26   0:00 login -- user
+user         377  0.3  0.1  22332 13056 ?        Ss   10:26   0:00 /usr/lib/systemd/systemd --user
+user         381  0.0  0.0  22900  4044 ?        S    10:26   0:00 (sd-pam)
+user         407  0.0  0.0   6128  4992 pts/1    Ss+  10:26   0:00 -bash
+user         512  0.0  0.0   2884  1792 pts/0    S+   10:26   0:00 sh task.sh
+user         522  0.0  0.0   7156  4224 pts/0    R+   10:26   0:00 ps aux
