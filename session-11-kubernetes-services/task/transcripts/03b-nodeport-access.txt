@@ -1,0 +1,20 @@
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- curl -s -I http://localhost:31080
+HTTP/1.1 200 OK
+Server: nginx/1.31.6
+Date: Fri, 18 Sep 2026 04:52:28 GMT
+Content-Type: text/html
+Content-Length: 896
+Last-Modified: Tue, 15 Sep 2026 14:18:52 GMT
+Connection: keep-alive
+ETag: "6aa953cc-380"
+Accept-Ranges: bytes
+
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- curl -s -I http://192.168.49.2:31080 | head -3
+HTTP/1.1 200 OK
+Server: nginx/1.31.6
+Date: Fri, 18 Sep 2026 04:52:29 GMT
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- curl -s http://192.168.49.2:31080 | grep -i title
+<title>Welcome to nginx!</title>
+

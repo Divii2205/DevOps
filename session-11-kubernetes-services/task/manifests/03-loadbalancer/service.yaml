@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service-loadbalancer
+  namespace: s11-lab
+spec:
+  type: LoadBalancer                     # superset of NodePort, which is a superset of ClusterIP
+  selector:
+    app: web-loadbalancer
+  ports:
+    - protocol: TCP
+      port: 80                           # the port the external LB listens on
+      targetPort: 80                     # container port
+      nodePort: 31081                    # auto-allocated if omitted; pinned here to prove the layer exists

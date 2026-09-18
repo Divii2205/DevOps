@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service-nodeport
+  namespace: s11-lab
+spec:
+  type: NodePort                         # superset of ClusterIP
+  selector:
+    app: web-nodeport
+  ports:
+    - protocol: TCP
+      port: 80                           # Service VIP port (ClusterIP layer still exists)
+      targetPort: 80                     # container port
+      nodePort: 31080                    # <-- nodePort: opened on EVERY node, range 30000-32767
+                                         #     (30080 was already taken by another lab on this shared cluster)

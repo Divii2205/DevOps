@@ -1,0 +1,25 @@
+PS D:\...\session-11-kubernetes-services\task> cat diagrams/cost-comparison.txt
+        CLOUD LOAD BALANCER COST ANTI-PATTERN  (50 microservices)
+
+  ANTI-PATTERN - one type: LoadBalancer per service
+    svc-a  --> AWS NLB #1   $18-25 / month
+    svc-b  --> AWS NLB #2   $18-25 / month
+    svc-c  --> AWS NLB #3   $18-25 / month
+    ...       ... x 50
+    -------------------------------------------------
+    50 x $25 = $1,250 / month  =  $15,000 / year
+    plus 50 public IPs, 50 TLS certs, 50 security groups,
+    50 DNS records and 50 health-check configs to maintain.
+
+  BEST PRACTICE - one Ingress in front of N ClusterIP services
+    Internet --> 1 x AWS NLB/ALB  $25 / month
+                        |
+                        v
+               NGINX Ingress Controller   (L7 host + path routing, TLS termination)
+                 |          |          |
+                 v          v          v
+             ClusterIP   ClusterIP   ClusterIP  ... x 50   ($0 each)
+    -------------------------------------------------
+    Total = $25 / month  =  $300 / year
+    SAVING = $1,225 / month  =  $14,700 / year  (98% reduction)
+

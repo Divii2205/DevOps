@@ -1,0 +1,67 @@
+# Two independent microservices, BOTH exposed only as internal ClusterIP.
+# Neither of them costs a cloud load balancer.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-app
+  namespace: s11-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: shop }
+  template:
+    metadata:
+      labels: { app: shop }
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports: [{ containerPort: 80 }]
+          command: ["/bin/sh","-c"]
+          args: ["echo '<title>SHOP microservice</title>' > /usr/share/nginx/html/index.html && exec nginx -g 'daemon off;'"]
+          resources:
+            requests: { cpu: "10m", memory: "16Mi" }
+            limits:   { cpu: "100m", memory: "64Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-svc
+  namespace: s11-lab
+spec:
+  type: ClusterIP
+  selector: { app: shop }
+  ports: [{ port: 80, targetPort: 80 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-app
+  namespace: s11-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: billing }
+  template:
+    metadata:
+      labels: { app: billing }
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports: [{ containerPort: 80 }]
+          command: ["/bin/sh","-c"]
+          args: ["echo '<title>BILLING microservice</title>' > /usr/share/nginx/html/index.html && exec nginx -g 'daemon off;'"]
+          resources:
+            requests: { cpu: "10m", memory: "16Mi" }
+            limits:   { cpu: "100m", memory: "64Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: billing-svc
+  namespace: s11-lab
+spec:
+  type: ClusterIP
+  selector: { app: billing }
+  ports: [{ port: 80, targetPort: 80 }]

@@ -1,0 +1,43 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -n kube-system -l k8s-app=kube-dns -o wide
+NAME                       READY   STATUS    RESTARTS      AGE     IP           NODE       NOMINATED NODE   READINESS GATES
+coredns-559f6c778d-swbrw   1/1     Running   4 (12m ago)   2d21h   10.244.0.8   minikube   <none>           <none>
+
+PS D:\Users\user\Desktop\DevOps> kubectl get svc -n kube-system kube-dns
+NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   2d21h
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- cat /etc/resolv.conf
+search s11-lab.svc.cluster.local svc.cluster.local cluster.local
+nameserver 10.96.0.10
+options ndots:5
+
+PS D:\Users\user\Desktop\DevOps> kubectl get cm coredns -n kube-system -o jsonpath='{.data.Corefile}'
+.:53 {
+    log
+    errors
+    health {
+       lameduck 5s
+    }
+    ready
+    kubernetes cluster.local in-addr.arpa ip6.arpa {
+       pods insecure
+       fallthrough in-addr.arpa ip6.arpa
+       ttl 30
+    }
+    prometheus :9153
+    hosts {
+       192.168.65.254 host.minikube.internal
+       fallthrough
+    }
+    forward . /etc/resolv.conf {
+       max_concurrent 1000
+    }
+    cache 30 {
+       disable success cluster.local
+       disable denial cluster.local
+    }
+    loop
+    reload
+    loadbalance
+}
+

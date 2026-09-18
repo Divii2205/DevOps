@@ -1,0 +1,27 @@
+PS D:\Users\user\Desktop\DevOps> kubectl explain pod.spec.containers.ports.containerPort
+KIND:       Pod
+VERSION:    v1
+
+FIELD: containerPort <integer>
+
+
+DESCRIPTION:
+    Number of port to expose on the pod's IP address. This must be a valid port
+    number, 0 < x < 65536.
+    
+
+
+PS D:\Users\user\Desktop\DevOps> kubectl explain service.spec.ports.nodePort | head -12
+KIND:       Service
+VERSION:    v1
+
+FIELD: nodePort <integer>
+
+
+DESCRIPTION:
+    The port on each node on which this service is exposed when type is NodePort
+    or LoadBalancer.  Usually assigned by the system. If a value is specified,
+    in-range, and not in use it will be used, otherwise the operation will fail.
+    If not specified, a port will be allocated if this Service requires one.  If
+    this field is specified when creating a Service which does not need it,
+

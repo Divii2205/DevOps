@@ -1,0 +1,15 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get svc web-service-headless -n s11-lab
+NAME                   TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+web-service-headless   ClusterIP   None         <none>        80/TCP    6s
+
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -l app=web-headless -n s11-lab -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+web-stateful-0   1/1     Running   0          5s    10.244.0.49   minikube   <none>           <none>
+web-stateful-1   1/1     Running   0          4s    10.244.0.50   minikube   <none>           <none>
+web-stateful-2   1/1     Running   0          2s    10.244.0.51   minikube   <none>           <none>
+
+PS D:\Users\user\Desktop\DevOps> kubectl get endpoints web-service-headless -n s11-lab
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                   ENDPOINTS                                      AGE
+web-service-headless   10.244.0.49:80,10.244.0.50:80,10.244.0.51:80   7s
+

@@ -1,0 +1,21 @@
+PS D:\Users\user\Desktop\DevOps> kubectl apply -f 06-no-selector/endpoints.yaml
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+endpoints/external-legacy-db created
+
+PS D:\Users\user\Desktop\DevOps> kubectl get endpoints external-legacy-db -n s11-lab
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                 ENDPOINTS            AGE
+external-legacy-db   192.168.1.150:3306   1s
+
+PS D:\Users\user\Desktop\DevOps> kubectl get endpointslices -n s11-lab -l kubernetes.io/service-name=external-legacy-db
+NAME                       ADDRESSTYPE   PORTS   ENDPOINTS       AGE
+external-legacy-db-hnwb4   IPv4          3306    192.168.1.150   0s
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe svc external-legacy-db -n s11-lab | grep -E 'Selector|Endpoints'
+Selector:                 <none>
+Endpoints:                192.168.1.150:3306
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- nslookup external-legacy-db 2>&1 | grep -A1 '^Name'
+Name:	external-legacy-db.s11-lab.svc.cluster.local
+Address: 10.106.118.157
+

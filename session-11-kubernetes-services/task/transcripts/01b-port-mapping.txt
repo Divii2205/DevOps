@@ -1,0 +1,24 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get svc web-service-nodeport -n s11-lab -o yaml | sed -n '/^spec:/,/^status:/p'
+spec:
+  clusterIP: 10.100.109.118
+  clusterIPs:
+  - 10.100.109.118
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 31080
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: web-nodeport
+  sessionAffinity: None
+  type: NodePort
+status:
+
+PS D:\Users\user\Desktop\DevOps> kubectl get deploy web-app-nodeport -n s11-lab -o jsonpath='{.spec.template.spec.containers[0].ports[0].containerPort}{"  <- containerPort\n"}'
+80  <- containerPort
+

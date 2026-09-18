@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-client
+  namespace: s11-lab
+  labels:
+    app: diagnostic-client
+spec:
+  containers:
+    - name: busybox
+      image: busybox:1.36
+      command: ["sh", "-c", "while true; do sleep 30; done"]
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"
+        limits:
+          cpu: "50m"
+          memory: "32Mi"

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web-stateful
+  namespace: s11-lab
+spec:
+  serviceName: web-service-headless      # governing headless Service -> gives pods stable DNS
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-headless
+  template:
+    metadata:
+      labels:
+        app: web-headless
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"

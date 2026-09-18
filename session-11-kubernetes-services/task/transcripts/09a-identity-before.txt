@@ -1,0 +1,13 @@
+# BEFORE deletion: Deployment = random hashes, StatefulSet = ordinals
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -l app=web-clusterip -n s11-lab
+NAME                                 READY   STATUS    RESTARTS   AGE
+web-app-clusterip-7c9ccf659f-7nssb   1/1     Running   0          10m
+web-app-clusterip-7c9ccf659f-hlmmn   1/1     Running   0          10m
+web-app-clusterip-7c9ccf659f-m8xw9   1/1     Running   0          10m
+
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -l app=web-headless -n s11-lab
+NAME             READY   STATUS    RESTARTS   AGE
+web-stateful-0   1/1     Running   0          46s
+web-stateful-1   1/1     Running   0          45s
+web-stateful-2   1/1     Running   0          43s
+

@@ -1,0 +1,15 @@
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- nslookup external-database-service.s11-lab.svc.cluster.local
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+external-database-service.s11-lab.svc.cluster.local	canonical name = api.github.com
+Name:	api.github.com
+Address: 20.207.73.85
+
+external-database-service.s11-lab.svc.cluster.local	canonical name = api.github.com
+
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- --no-check-certificate https://external-database-service 2>&1 | head -5
+wget: server returned error: HTTP/1.1 400 Bad Request
+command terminated with exit code 1
+

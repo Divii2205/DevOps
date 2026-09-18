@@ -1,0 +1,21 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get deploy,sts,ds -n s11-lab
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/web-app-clusterip   3/3     3            3           11m
+
+NAME                            READY   AGE
+statefulset.apps/web-stateful   3/3     114s
+
+NAME                           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/node-agent-ds   1         1         1       1            1           <none>          20s
+
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -n s11-lab -o custom-columns='POD:.metadata.name,OWNER-KIND:.metadata.ownerReferences[0].kind,NODE:.spec.nodeName'
+POD                                  OWNER-KIND    NODE
+curl-client                          <none>        minikube
+node-agent-ds-mm9bt                  DaemonSet     minikube
+web-app-clusterip-7c9ccf659f-4np22   ReplicaSet    minikube
+web-app-clusterip-7c9ccf659f-hlmmn   ReplicaSet    minikube
+web-app-clusterip-7c9ccf659f-m8xw9   ReplicaSet    minikube
+web-stateful-0                       StatefulSet   minikube
+web-stateful-1                       StatefulSet   minikube
+web-stateful-2                       StatefulSet   minikube
+

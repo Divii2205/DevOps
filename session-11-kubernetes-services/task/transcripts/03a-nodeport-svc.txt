@@ -1,0 +1,17 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -l app=web-nodeport -n s11-lab -o wide
+NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+web-app-nodeport-64967b45b9-fsc99   1/1     Running   0          68s   10.244.0.27   minikube   <none>           <none>
+web-app-nodeport-64967b45b9-mnhxm   1/1     Running   0          68s   10.244.0.28   minikube   <none>           <none>
+
+PS D:\Users\user\Desktop\DevOps> kubectl get svc web-service-nodeport -n s11-lab
+NAME                   TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+web-service-nodeport   NodePort   10.100.109.118   <none>        80:31080/TCP   45s
+
+PS D:\Users\user\Desktop\DevOps> kubectl get endpoints web-service-nodeport -n s11-lab
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                   ENDPOINTS                       AGE
+web-service-nodeport   10.244.0.27:80,10.244.0.28:80   46s
+
+PS D:\Users\user\Desktop\DevOps> minikube ip
+192.168.49.2
+

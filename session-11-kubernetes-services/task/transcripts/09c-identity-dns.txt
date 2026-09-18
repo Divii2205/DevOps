@@ -1,0 +1,12 @@
+# web-stateful-0 was recreated with a NEW pod IP but the SAME name and SAME DNS record
+PS D:\Users\user\Desktop\DevOps> kubectl get pod web-stateful-0 -n s11-lab -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+web-stateful-0   1/1     Running   0          25s   10.244.0.53   minikube   <none>           <none>
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- nslookup web-stateful-0.web-service-headless.s11-lab.svc.cluster.local 2>&1 | grep -A1 '^Name'
+Name:	web-stateful-0.web-service-headless.s11-lab.svc.cluster.local
+Address: 10.244.0.53
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab web-stateful-0 -- hostname -f
+web-stateful-0.web-service-headless.s11-lab.svc.cluster.local
+

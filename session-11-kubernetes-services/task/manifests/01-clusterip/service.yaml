@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service-clusterip
+  namespace: s11-lab
+spec:
+  type: ClusterIP                        # default type; allocates a virtual IP
+  selector:
+    app: web-clusterip                   # label selector -> auto-populates Endpoints
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080                         # <-- port: the Service VIP port
+      targetPort: 80                     # <-- targetPort: the container port traffic lands on

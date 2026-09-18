@@ -1,0 +1,11 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get svc external-database-service -n s11-lab
+NAME                        TYPE           CLUSTER-IP   EXTERNAL-IP      PORT(S)   AGE
+external-database-service   ExternalName   <none>       api.github.com   <none>    3s
+
+PS D:\Users\user\Desktop\DevOps> kubectl get endpoints external-database-service -n s11-lab
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+Error from server (NotFound): endpoints "external-database-service" not found
+
+PS D:\Users\user\Desktop\DevOps> kubectl get svc external-database-service -n s11-lab -o jsonpath='{.spec.type}{" -> "}{.spec.externalName}{"  clusterIP="}{.spec.clusterIP}{"\n"}'
+ExternalName -> api.github.com  clusterIP=
+

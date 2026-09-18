@@ -1,0 +1,10 @@
+PS D:\Users\user\Desktop\DevOps> docker ps --filter name=minikube --format 'table {{.Names}}\t{{.Ports}}'
+NAMES      PORTS
+minikube   127.0.0.1:60411->22/tcp, 127.0.0.1:60407->2376/tcp, 127.0.0.1:60409->5000/tcp, 127.0.0.1:60410->8443/tcp, 127.0.0.1:60408->32443/tcp
+
+PS D:\Users\user\Desktop\DevOps> docker network inspect minikube --format '{{.Driver}} {{range .IPAM.Config}}subnet={{.Subnet}} gateway={{.Gateway}}{{end}}'
+bridge subnet=192.168.49.0/24 gateway=192.168.49.1
+
+PS D:\Users\user\Desktop\DevOps> docker inspect minikube --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}} -> {{$v.IPAddress}}{{end}}'
+minikube -> 192.168.49.2
+

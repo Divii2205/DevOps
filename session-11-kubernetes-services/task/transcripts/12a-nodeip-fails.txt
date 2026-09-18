@@ -1,0 +1,15 @@
+PS D:\Users\user\Desktop\DevOps> minikube ip
+192.168.49.2
+
+PS D:\Users\user\Desktop\DevOps> curl --connect-timeout 5 -s -I http://192.168.49.2:31080 || echo "FAILED: Node IP 192.168.49.2 is NOT routable from the Windows host"
+FAILED: Node IP 192.168.49.2 is NOT routable from the Windows host
+
+PS D:\Users\user\Desktop\DevOps> ping -n 2 192.168.49.2
+
+Pinging 192.168.49.2 with 32 bytes of data:
+Request timed out.
+Request timed out.
+
+Ping statistics for 192.168.49.2:
+    Packets: Sent = 2, Received = 0, Lost = 2 (100% loss),
+

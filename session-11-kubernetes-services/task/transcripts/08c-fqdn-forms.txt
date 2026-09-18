@@ -1,0 +1,17 @@
+# All four naming forms resolve to the SAME ClusterIP VIP
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- nslookup web-service-clusterip.s11-lab.svc.cluster.local 2>&1 | grep -A1 '^Name'
+Name:	web-service-clusterip.s11-lab.svc.cluster.local
+Address: 10.111.225.236
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://web-service-clusterip:8080 | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://web-service-clusterip.s11-lab:8080 | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://web-service-clusterip.s11-lab.svc:8080 | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://web-service-clusterip.s11-lab.svc.cluster.local:8080 | grep -i title
+<title>Welcome to nginx!</title>
+

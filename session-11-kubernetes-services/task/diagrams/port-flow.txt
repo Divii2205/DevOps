@@ -1,0 +1,19 @@
+        KUBERNETES PORT ARCHITECTURE  (real values from this lab)
+
+  External client            192.168.49.2 : 31080      <- nodePort
+        |                    (opened by kube-proxy on EVERY node, 30000-32767)
+        v
+  Service VIP                10.100.109.118 : 80       <- port
+        |                    (virtual IP, iptables/IPVS DNAT, cluster-internal)
+        v
+  Pod network                10.244.0.27 : 80          <- targetPort
+        |                    (the port on the POD the traffic is sent to)
+        v
+  Container process          nginx listening on 80     <- containerPort
+                             (pure documentation; changing it proxies nothing)
+
+  SCOPE SUMMARY
+  nodePort      node / host network   outside the cluster     NodePort + LoadBalancer only
+  port          Service virtual IP    inside the cluster      every Service type
+  targetPort    pod IP                inside the cluster      resolves named ports too
+  containerPort pod's own netns       informational only      Pod spec, not Service spec

@@ -1,0 +1,18 @@
+# 2 microservices, ZERO LoadBalancers of their own - both are plain ClusterIP
+PS D:\Users\user\Desktop\DevOps> kubectl get svc shop-svc billing-svc -n s11-lab
+NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+shop-svc      ClusterIP   10.102.72.162   <none>        80/TCP    33s
+billing-svc   ClusterIP   10.104.35.115   <none>        80/TCP    33s
+
+PS D:\Users\user\Desktop\DevOps> kubectl get ingress -n s11-lab
+NAME              CLASS   HOSTS       ADDRESS   PORTS   AGE
+unified-ingress   nginx   s11.local             80      33s
+
+
+# ONE shared entrypoint (the ingress controller) fans out by URL path:
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- curl -s -H "'Host: s11.local'" http://localhost:30946/shop
+<title>SHOP microservice</title>
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- curl -s -H "'Host: s11.local'" http://localhost:30946/billing
+<title>BILLING microservice</title>
+

@@ -1,0 +1,18 @@
+PS D:\Users\user\Desktop\DevOps> kubectl delete pod web-app-clusterip-7c9ccf659f-7nssb -n s11-lab
+pod "web-app-clusterip-7c9ccf659f-7nssb" deleted from s11-lab namespace
+
+PS D:\Users\user\Desktop\DevOps> kubectl delete pod web-stateful-0 -n s11-lab
+pod "web-stateful-0" deleted from s11-lab namespace
+
+PS D:\Users\user\Desktop\DevOps> sleep 12; kubectl get pods -l app=web-clusterip -n s11-lab
+NAME                                 READY   STATUS    RESTARTS   AGE
+web-app-clusterip-7c9ccf659f-4np22   1/1     Running   0          15s
+web-app-clusterip-7c9ccf659f-hlmmn   1/1     Running   0          11m
+web-app-clusterip-7c9ccf659f-m8xw9   1/1     Running   0          11m
+
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -l app=web-headless -n s11-lab
+NAME             READY   STATUS    RESTARTS   AGE
+web-stateful-0   1/1     Running   0          12s
+web-stateful-1   1/1     Running   0          68s
+web-stateful-2   1/1     Running   0          66s
+

@@ -1,0 +1,27 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get svc web-service-loadbalancer -n s11-lab
+NAME                       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+web-service-loadbalancer   LoadBalancer   10.109.222.35   <pending>     80:31081/TCP   8s
+
+PS D:\Users\user\Desktop\DevOps> kubectl get svc web-service-loadbalancer -n s11-lab -o yaml | sed -n '/^spec:/,$p'
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.109.222.35
+  clusterIPs:
+  - 10.109.222.35
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 31081
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: web-loadbalancer
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+

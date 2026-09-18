@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-clusterip
+  namespace: s11-lab
+  labels:
+    app: web-clusterip
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-clusterip
+  template:
+    metadata:
+      labels:
+        app: web-clusterip
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - name: http
+              containerPort: 80          # <-- containerPort: documentation of the port nginx listens on
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"

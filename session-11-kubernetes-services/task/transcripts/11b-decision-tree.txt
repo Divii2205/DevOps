@@ -1,0 +1,26 @@
+PS D:\...\session-11-kubernetes-services\task> cat diagrams/decision-tree.txt
+        KUBERNETES SERVICE SELECTION DECISION TREE
+
+  Does traffic need to reach this workload from OUTSIDE the cluster?
+  |
+  +-- NO ---> Do clients need to address INDIVIDUAL pods (Kafka, Cassandra,
+  |           MongoDB replica set, ZooKeeper, any peer-to-peer quorum)?
+  |             |
+  |             +-- YES --> HEADLESS SERVICE      (clusterIP: None)
+  |             +-- NO  --> CLUSTERIP             (the default)
+  |
+  +-- YES --> Is the backend actually a THIRD-PARTY domain outside k8s
+              (RDS endpoint, Stripe, an on-prem legacy host)?
+                |
+                +-- YES, DNS name  --> EXTERNALNAME     (CoreDNS CNAME)
+                +-- YES, raw IP    --> SERVICE WITHOUT SELECTOR + manual Endpoints
+                +-- NO ---> Running on a public cloud (EKS / GKE / AKS)?
+                              |
+                              +-- YES, HTTP(S)  --> ONE Ingress behind ONE
+                              |                     LoadBalancer; every app stays
+                              |                     internal ClusterIP
+                              +-- YES, raw TCP/UDP --> type: LoadBalancer directly
+                              +-- NO (on-prem / minikube / bare metal)
+                                                 --> NODEPORT (+ external HAProxy
+                                                     or MetalLB if you need :80)
+

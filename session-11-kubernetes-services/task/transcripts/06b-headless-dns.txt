@@ -1,0 +1,14 @@
+# Headless -> CoreDNS returns one A record PER POD, not a VIP
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- nslookup web-service-headless.s11-lab.svc.cluster.local 2>&1 | head -14
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+
+Name:	web-service-headless.s11-lab.svc.cluster.local
+Address: 10.244.0.50
+Name:	web-service-headless.s11-lab.svc.cluster.local
+Address: 10.244.0.49
+Name:	web-service-headless.s11-lab.svc.cluster.local
+Address: 10.244.0.51
+
+

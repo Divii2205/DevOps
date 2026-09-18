@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-legacy-db
+  namespace: s11-lab
+spec:
+  type: ClusterIP
+  # NO selector on purpose -> the endpoints controller will NOT populate Endpoints
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306

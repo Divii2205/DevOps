@@ -1,0 +1,9 @@
+# Raw request through the alias -> TCP/TLS reaches GitHub, but Host/SNI is the alias:
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- --no-check-certificate https://external-database-service 2>&1 | head -3
+wget: server returned error: HTTP/1.1 400 Bad Request
+command terminated with exit code 1
+
+
+# Same alias, correct Host header -> real GitHub API response comes back:
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- --no-check-certificate --header='Host: api.github.com' https://external-database-service/zen 2>&1 | head -3
+Accessible for all.

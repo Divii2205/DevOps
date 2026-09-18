@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: external-legacy-db               # MUST match the Service name exactly
+  namespace: s11-lab
+subsets:
+  - addresses:
+      - ip: 192.168.1.150                # external / legacy MySQL box outside the cluster
+    ports:
+      - port: 3306

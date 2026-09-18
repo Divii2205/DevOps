@@ -1,0 +1,37 @@
+# Only StatefulSet has volumeClaimTemplates + serviceName; only Deployment has strategy/RS revisions
+PS D:\Users\user\Desktop\DevOps> kubectl explain statefulset.spec | grep -E 'volumeClaimTemplates|serviceName|podManagementPolicy|ordinals' 
+  ordinals	<StatefulSetOrdinals>
+    ordinals controls the numbering of replica indices in a StatefulSet. The
+    default ordinals behavior assigns a "0" index to the first replica and
+    volume claims created from volumeClaimTemplates. By default, all persistent
+  podManagementPolicy	<string>
+    podManagementPolicy controls how pods are created during initial scale up,
+  serviceName	<string>
+    serviceName is the name of the service that governs this StatefulSet. This
+    pod-specific-string.serviceName.default.svc.cluster.local where
+  volumeClaimTemplates	<[]PersistentVolumeClaim>
+    volumeClaimTemplates is a list of claims that pods are allowed to reference.
+
+PS D:\Users\user\Desktop\DevOps> kubectl explain deployment.spec | grep -E 'strategy|revisionHistoryLimit|progressDeadline'
+  progressDeadlineSeconds	<integer>
+  revisionHistoryLimit	<integer>
+  strategy	<DeploymentStrategy>
+    The deployment strategy to use to replace existing pods with new ones.
+
+PS D:\Users\user\Desktop\DevOps> kubectl explain daemonset.spec | grep -E 'updateStrategy|selector|template'
+  selector	<LabelSelector> -required-
+    order to be controlled. It must match the pod template's labels. More info:
+    https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+  template	<PodTemplateSpec> -required-
+    template's node selector (or on every node if no node selector is
+    specified). The only allowed template.spec.restartPolicy value is "Always".
+    https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template
+  updateStrategy	<DaemonSetUpdateStrategy>
+
+
+# Ordered, reversed shutdown: scale 3 -> 1 removes the HIGHEST ordinal first
+PS D:\Users\user\Desktop\DevOps> kubectl scale statefulset web-stateful -n s11-lab --replicas=1; sleep 10; kubectl get pods -l app=web-headless -n s11-lab
+statefulset.apps/web-stateful scaled
+NAME             READY   STATUS    RESTARTS   AGE
+web-stateful-0   1/1     Running   0          90s
+

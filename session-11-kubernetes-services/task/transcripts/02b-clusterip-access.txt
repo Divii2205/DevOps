@@ -1,0 +1,27 @@
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://web-service-clusterip:8080 | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://web-service-clusterip.s11-lab.svc.cluster.local:8080 | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://10.111.225.236:8080 | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- nslookup web-service-clusterip
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+** server can't find web-service-clusterip.cluster.local: NXDOMAIN
+
+Name:	web-service-clusterip.s11-lab.svc.cluster.local
+Address: 10.111.225.236
+
+** server can't find web-service-clusterip.svc.cluster.local: NXDOMAIN
+
+
+** server can't find web-service-clusterip.cluster.local: NXDOMAIN
+
+** server can't find web-service-clusterip.svc.cluster.local: NXDOMAIN
+
+command terminated with exit code 1
+

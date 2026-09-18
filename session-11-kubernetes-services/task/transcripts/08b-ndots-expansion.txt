@@ -1,0 +1,15 @@
+# 'example.com' has 1 dot < ndots:5 -> libc walks EVERY search domain BEFORE the real name.
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -q -O /dev/null http://example.com; echo "wget exit=$?"
+wget exit=0
+
+PS D:\Users\user\Desktop\DevOps> kubectl logs -n kube-system -l k8s-app=kube-dns --tail=120 | grep -i example | tail -8
+[INFO] 10.244.0.44:60875 - 20824 "AAAA IN example.com.s11-lab.svc.cluster.local. udp 55 false 512" NXDOMAIN qr,aa,rd 148 0.00022871s
+[INFO] 10.244.0.44:60875 - 29022 "A IN example.com.s11-lab.svc.cluster.local. udp 55 false 512" NXDOMAIN qr,aa,rd 148 0.00029784s
+[INFO] 10.244.0.44:53898 - 56977 "AAAA IN example.com.svc.cluster.local. udp 47 false 512" NXDOMAIN qr,aa,rd 140 0.000140263s
+[INFO] 10.244.0.44:53898 - 61076 "A IN example.com.svc.cluster.local. udp 47 false 512" NXDOMAIN qr,aa,rd 140 0.000109761s
+[INFO] 10.244.0.44:53820 - 5425 "A IN example.com.cluster.local. udp 43 false 512" NXDOMAIN qr,aa,rd 136 0.000108135s
+[INFO] 10.244.0.44:53820 - 16432 "AAAA IN example.com.cluster.local. udp 43 false 512" NXDOMAIN qr,aa,rd 136 0.000259899s
+[INFO] 10.244.0.44:37666 - 8337 "AAAA IN example.com. udp 29 false 512" NOERROR qr,rd,ra 29 0.002683112s
+[INFO] 10.244.0.44:37666 - 41104 "A IN example.com. udp 29 false 512" NOERROR qr,rd,ra 83 0.002765873s
+

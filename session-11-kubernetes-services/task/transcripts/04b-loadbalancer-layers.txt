@@ -1,0 +1,24 @@
+# A LoadBalancer Service is a SUPERSET: ClusterIP + NodePort + external cloud LB
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s11-lab curl-client -- wget -qO- http://web-service-loadbalancer:80 | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- curl -s -I http://localhost:31081 | head -2
+HTTP/1.1 200 OK
+Server: nginx/1.31.6
+
+PS D:\Users\user\Desktop\DevOps> kubectl get svc web-service-loadbalancer -n s11-lab -o jsonpath='{.status.loadBalancer}{"   <- layer 3 empty: no cloud controller\n"}'
+{}   <- layer 3 empty: no cloud controller
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe svc web-service-loadbalancer -n s11-lab | sed -n '/^IP:/,/^Events/p'
+IP:                       10.109.222.35
+IPs:                      10.109.222.35
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  31081/TCP
+Endpoints:                10.244.0.40:80,10.244.0.41:80,10.244.0.42:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
