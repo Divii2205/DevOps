@@ -1,0 +1,91 @@
+# Backend tier: consumes the ConfigMap in BULK (envFrom) and the Secret
+# key-by-key (env.valueFrom.secretKeyRef). It also mounts the same ConfigMap
+# as a VOLUME so Task 2 can prove volume mounts live-refresh while env vars do not.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yatri-backend
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yatri-app
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: yatri-app
+        tier: backend
+    spec:
+      containers:
+        - name: backend
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          # --- BULK injection of every non-sensitive key in the ConfigMap ---
+          envFrom:
+            - configMapRef:
+                name: yatri-app-config
+          # --- GRANULAR injection of individual sensitive keys from the Secret ---
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: yatri-db-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: yatri-db-secret
+                  key: POSTGRES_PASSWORD
+          # --- ConfigMap as a VOLUME (each key becomes a file) ---
+          volumeMounts:
+            - name: app-config-volume
+              mountPath: /etc/app-config
+              readOnly: true
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cat > /usr/share/nginx/html/index.html <<HTML
+              <html><head><title>Yatri Backend API</title></head><body>
+              <h1>Yatri Backend API</h1>
+              <pre>
+              SERVED_BY:        $(hostname)
+              ENVIRONMENT:      ${ENVIRONMENT}
+              LOG_LEVEL:        ${LOG_LEVEL}
+              PORT:             ${PORT}
+              DEFAULT_CURRENCY: ${DEFAULT_CURRENCY}
+              MAX_BOOKING_DAYS: ${MAX_BOOKING_DAYS}
+              POSTGRES_USER:    ${POSTGRES_USER}
+              POSTGRES_PASSWORD:${POSTGRES_PASSWORD}
+              </pre></body></html>
+              HTML
+              exec nginx -g 'daemon off;'
+          resources:
+            requests: {cpu: "10m", memory: "16Mi"}
+            limits:   {cpu: "200m", memory: "64Mi"}
+      volumes:
+        - name: app-config-volume
+          configMap:
+            name: yatri-app-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yatri-backend-svc
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+    tier: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: yatri-app
+    tier: backend
+  ports:
+    - port: 80
+      targetPort: 80

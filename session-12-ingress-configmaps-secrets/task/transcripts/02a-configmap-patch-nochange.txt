@@ -1,0 +1,21 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -n s12-lab -l tier=backend
+NAME                             READY   STATUS        RESTARTS   AGE
+yatri-backend-594d9677c9-84vkl   1/1     Terminating   0          35s
+yatri-backend-68795995c9-68pzx   1/1     Running       0          1s
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab deploy/yatri-backend -- env | grep ENVIRONMENT
+ENVIRONMENT=production
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab deploy/yatri-backend -- sh -c 'cat /etc/app-config/ENVIRONMENT; echo'
+production
+
+PS D:\Users\user\Desktop\DevOps> kubectl patch configmap yatri-app-config -n s12-lab --type merge -p '{"data":{"ENVIRONMENT":"staging"}}'
+configmap/yatri-app-config patched
+
+PS D:\Users\user\Desktop\DevOps> kubectl get configmap yatri-app-config -n s12-lab -o jsonpath='{.data.ENVIRONMENT}' && echo ''
+staging
+
+PS D:\Users\user\Desktop\DevOps> # immediately re-read the SAME running pod:
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab deploy/yatri-backend -- env | grep ENVIRONMENT
+ENVIRONMENT=production
+

@@ -1,0 +1,27 @@
+PS D:\Users\user\Desktop\DevOps> kubectl apply -f 04-ingress-path/ingress-path.yaml
+ingress.networking.k8s.io/yatri-ingress unchanged
+
+PS D:\Users\user\Desktop\DevOps> kubectl get ingress yatri-ingress -n s12-lab
+NAME            CLASS   HOSTS             ADDRESS        PORTS   AGE
+yatri-ingress   nginx   yatri-s12.local   192.168.49.2   80      42s
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe ingress yatri-ingress -n s12-lab | head -25
+Name:             yatri-ingress
+Labels:           app=yatri-app
+Namespace:        s12-lab
+Address:          192.168.49.2
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host             Path  Backends
+  ----             ----  --------
+  yatri-s12.local  
+                   /api(/|$)(.*)   yatri-backend-svc:80 (10.244.0.35:80)
+                   /()(.*)         yatri-frontend-svc:80 (10.244.0.30:80)
+Annotations:       nginx.ingress.kubernetes.io/rewrite-target: /$2
+                   nginx.ingress.kubernetes.io/use-regex: true
+Events:
+  Type    Reason  Age                From                      Message
+  ----    ------  ----               ----                      -------
+  Normal  Sync    31s (x2 over 43s)  nginx-ingress-controller  Scheduled for sync
+

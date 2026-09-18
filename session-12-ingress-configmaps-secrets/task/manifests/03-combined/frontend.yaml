@@ -1,0 +1,47 @@
+# Frontend tier: plain nginx:alpine default page (<title>Welcome to nginx!</title>)
+# so path/host routing results are unmistakable versus the backend page.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yatri-frontend
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yatri-app
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: yatri-app
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests: {cpu: "10m", memory: "16Mi"}
+            limits:   {cpu: "200m", memory: "64Mi"}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yatri-frontend-svc
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+    tier: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: yatri-app
+    tier: frontend
+  ports:
+    - port: 80
+      targetPort: 80

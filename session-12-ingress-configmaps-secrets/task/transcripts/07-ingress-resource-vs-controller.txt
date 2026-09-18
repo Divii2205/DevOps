@@ -1,0 +1,20 @@
+PS D:\Users\user\Desktop\DevOps> # The Ingress RESOURCE is a native API object - it exists with or without a controller:
+PS D:\Users\user\Desktop\DevOps> kubectl api-resources | grep -i ingress
+ingressclasses                                   networking.k8s.io/v1              false        IngressClass
+ingresses                           ing          networking.k8s.io/v1              true         Ingress
+
+PS D:\Users\user\Desktop\DevOps> # The CONTROLLER is a running workload that implements those rules:
+PS D:\Users\user\Desktop\DevOps> kubectl get ingressclass
+NAME              CONTROLLER             PARAMETERS   AGE
+nginx (default)   k8s.io/ingress-nginx   <none>       18h
+
+PS D:\Users\user\Desktop\DevOps> kubectl get ingressclass nginx -o jsonpath='{.spec.controller}' && echo ''
+k8s.io/ingress-nginx
+
+PS D:\Users\user\Desktop\DevOps> kubectl get deploy -n ingress-nginx
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-nginx-controller   1/1     1            1           18h
+
+PS D:\Users\user\Desktop\DevOps> kubectl get validatingwebhookconfigurations | grep -i ingress
+ingress-nginx-admission   1          18h
+

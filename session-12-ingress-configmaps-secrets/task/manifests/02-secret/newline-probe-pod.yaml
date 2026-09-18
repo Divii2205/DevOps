@@ -1,0 +1,43 @@
+# Task 4: probe pod that receives BOTH the correctly-encoded password and the
+# newline-corrupted one, so the difference can be observed inside the container.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: newline-probe
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+spec:
+  restartPolicy: Never
+  containers:
+    - name: probe
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]
+      env:
+        - name: PASS_GOOD
+          valueFrom:
+            secretKeyRef:
+              name: yatri-db-secret
+              key: POSTGRES_PASSWORD
+        - name: PASS_BAD
+          valueFrom:
+            secretKeyRef:
+              name: yatri-db-secret-bad
+              key: POSTGRES_PASSWORD
+      volumeMounts:
+        - name: good
+          mountPath: /etc/secret-good
+          readOnly: true
+        - name: bad
+          mountPath: /etc/secret-bad
+          readOnly: true
+      resources:
+        requests: {cpu: "10m", memory: "8Mi"}
+        limits:   {cpu: "100m", memory: "32Mi"}
+  volumes:
+    - name: good
+      secret:
+        secretName: yatri-db-secret
+    - name: bad
+      secret:
+        secretName: yatri-db-secret-bad

@@ -1,0 +1,7 @@
+PS D:\Users\user\Desktop\DevOps> # traffic-isolation matrix: 2 hosts x 2 paths, one Ingress object
+PS D:\Users\user\Desktop\DevOps> for h in 'portal.campus-s12.local /' 'portal.campus-s12.local /api/' 'api.campus-s12.local /' 'api.campus-s12.local /ui/'; do set -- $h; printf '%-28s %-7s -> ' "$1" "$2"; minikube ssh -- "curl -s -H 'Host: $1' http://localhost$2" | grep -o -i '<title>[^<]*' | head -1; done
+portal.campus-s12.local      /       -> <title>Welcome to nginx!
+portal.campus-s12.local      /api/   -> <title>Yatri Backend API
+api.campus-s12.local         /       -> <title>Yatri Backend API
+api.campus-s12.local         /ui/    -> <title>Welcome to nginx!
+

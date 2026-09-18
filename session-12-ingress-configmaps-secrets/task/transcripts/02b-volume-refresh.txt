@@ -1,0 +1,10 @@
+PS D:\Users\user\Desktop\DevOps> # Poll the SAME pod (yatri-backend-68795995c9-68pzx) every 15s:
+PS D:\Users\user\Desktop\DevOps> #   env var (baked at container start)  vs  volume file (kubelet-synced)
+PS D:\Users\user\Desktop\DevOps> for i in 1 2 3 4 5 6 7 8; do E=$(kubectl exec -n s12-lab yatri-backend-68795995c9-68pzx -- sh -c 'printenv ENVIRONMENT'); V=$(kubectl exec -n s12-lab yatri-backend-68795995c9-68pzx -- sh -c 'cat /etc/app-config/ENVIRONMENT'); echo "t=$((i*15-15))s  env:ENVIRONMENT=$E   volume:/etc/app-config/ENVIRONMENT=$V"; if [ "$V" = staging ]; then echo '>>> volume mount REFRESHED - stopping poll'; break; fi; sleep 15; done
+t=0s  env:ENVIRONMENT=production   volume:/etc/app-config/ENVIRONMENT=production
+t=15s  env:ENVIRONMENT=production   volume:/etc/app-config/ENVIRONMENT=production
+t=30s  env:ENVIRONMENT=production   volume:/etc/app-config/ENVIRONMENT=production
+t=45s  env:ENVIRONMENT=production   volume:/etc/app-config/ENVIRONMENT=production
+t=60s  env:ENVIRONMENT=production   volume:/etc/app-config/ENVIRONMENT=staging
+>>> volume mount REFRESHED - stopping poll
+

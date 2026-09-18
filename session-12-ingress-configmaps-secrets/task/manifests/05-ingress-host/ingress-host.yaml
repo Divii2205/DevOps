@@ -1,0 +1,36 @@
+# Task 11 - Virtual HOST (subdomain) based routing.
+# Both hostnames resolve to the SAME ingress entry point / IP; the NGINX
+# controller picks the backend purely from the HTTP "Host:" request header
+# (an nginx `server_name` virtual host per rule).
+#   http://portal.campus-s12.local/ -> yatri-frontend-svc
+#   http://api.campus-s12.local/    -> yatri-backend-svc
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: campus-ingress-host
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: portal.campus-s12.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yatri-frontend-svc
+                port:
+                  number: 80
+    - host: api.campus-s12.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yatri-backend-svc
+                port:
+                  number: 80

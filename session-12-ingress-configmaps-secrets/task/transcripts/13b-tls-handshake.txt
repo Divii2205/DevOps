@@ -1,0 +1,16 @@
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -sk -o /dev/null -w 'https -> HTTP %{http_code}\n' -H 'Host: secure.campus-s12.local' https://localhost/"
+https -> HTTP 200
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -s -o /dev/null -w 'http  -> HTTP %{http_code} (ssl-redirect)\n' -H 'Host: secure.campus-s12.local' http://localhost/"
+http  -> HTTP 308 (ssl-redirect)
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -skv --resolve secure.campus-s12.local:443:127.0.0.1 https://secure.campus-s12.local/ 2>&1 | grep -E 'SSL connection|subject:|issuer:|ALPN: server|HTTP/2 '"
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN: server accepted h2
+*  subject: CN=secure.campus-s12.local; O=CampusDevOps
+*  issuer: CN=secure.campus-s12.local; O=CampusDevOps
+< HTTP/2 200 
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -sk -H 'Host: secure.campus-s12.local' https://localhost/" | grep -i title
+<title>Welcome to nginx!</title>
+

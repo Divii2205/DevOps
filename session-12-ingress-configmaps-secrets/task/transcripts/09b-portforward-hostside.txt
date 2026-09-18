@@ -1,0 +1,15 @@
+PS D:\Users\user\Desktop\DevOps> kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 18080:80   # (running in background)
+PS D:\Users\user\Desktop\DevOps> curl -s -o /dev/null -w 'portal.campus-s12.local -> HTTP %{http_code}\n' -H 'Host: portal.campus-s12.local' http://127.0.0.1:18080/
+portal.campus-s12.local -> HTTP 200
+
+PS D:\Users\user\Desktop\DevOps> curl -s -H 'Host: portal.campus-s12.local' http://127.0.0.1:18080/ | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> curl -s -H 'Host: api.campus-s12.local' http://127.0.0.1:18080/ | grep -E -i 'title|ENVIRONMENT'
+<html><head><title>Yatri Backend API</title></head><body>
+ENVIRONMENT:      production
+
+PS D:\Users\user\Desktop\DevOps> curl -s -H 'Host: yatri-s12.local' http://127.0.0.1:18080/api/ | grep -E -i 'SERVED_BY|POSTGRES_USER'
+SERVED_BY:        yatri-backend-7c44769979-th547
+POSTGRES_USER:    yatri_admin
+

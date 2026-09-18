@@ -1,0 +1,28 @@
+PS D:\Users\user\Desktop\DevOps> kubectl rollout restart deployment/yatri-backend -n s12-lab
+deployment.apps/yatri-backend restarted
+
+PS D:\Users\user\Desktop\DevOps> kubectl rollout status deployment/yatri-backend -n s12-lab
+Waiting for deployment "yatri-backend" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "yatri-backend" rollout to finish: 1 old replicas are pending termination...
+deployment "yatri-backend" successfully rolled out
+
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -n s12-lab -l tier=backend
+NAME                             READY   STATUS        RESTARTS   AGE
+yatri-backend-68795995c9-68pzx   1/1     Terminating   0          95s
+yatri-backend-75cb557f4d-9v8ls   1/1     Running       0          2s
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab deploy/yatri-backend -- env | grep ENVIRONMENT
+ENVIRONMENT=staging
+
+PS D:\Users\user\Desktop\DevOps> kubectl patch configmap yatri-app-config -n s12-lab --type merge -p '{"data":{"ENVIRONMENT":"production"}}'
+configmap/yatri-app-config patched
+
+PS D:\Users\user\Desktop\DevOps> kubectl rollout restart deployment/yatri-backend -n s12-lab && kubectl rollout status deployment/yatri-backend -n s12-lab
+deployment.apps/yatri-backend restarted
+Waiting for deployment "yatri-backend" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "yatri-backend" rollout to finish: 1 old replicas are pending termination...
+deployment "yatri-backend" successfully rolled out
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab deploy/yatri-backend -- env | grep ENVIRONMENT
+ENVIRONMENT=production
+

@@ -1,0 +1,41 @@
+PS D:\Users\user\Desktop\DevOps> kubectl apply -f 01-configmap/app-config.yaml
+configmap/yatri-app-config created
+
+PS D:\Users\user\Desktop\DevOps> kubectl get configmap yatri-app-config -n s12-lab
+NAME               DATA   AGE
+yatri-app-config   5      0s
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe configmap yatri-app-config -n s12-lab
+Name:         yatri-app-config
+Namespace:    s12-lab
+Labels:       app=yatri-app
+Annotations:  <none>
+
+Data
+====
+DEFAULT_CURRENCY:
+----
+INR
+
+ENVIRONMENT:
+----
+production
+
+LOG_LEVEL:
+----
+INFO
+
+MAX_BOOKING_DAYS:
+----
+90
+
+PORT:
+----
+8080
+
+
+BinaryData
+====
+
+Events:  <none>
+

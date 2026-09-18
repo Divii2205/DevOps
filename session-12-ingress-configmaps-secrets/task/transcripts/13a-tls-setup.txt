@@ -1,0 +1,40 @@
+PS D:\Users\user\Desktop\DevOps> openssl x509 -in tls.crt -noout -subject -issuer -dates -ext subjectAltName
+subject=CN=secure.campus-s12.local, O=CampusDevOps
+issuer=CN=secure.campus-s12.local, O=CampusDevOps
+notBefore=Sep 18 05:00:40 2026 GMT
+notAfter=Sep 18 05:00:40 2027 GMT
+X509v3 Subject Alternative Name: 
+    DNS:secure.campus-s12.local
+
+PS D:\Users\user\Desktop\DevOps> kubectl get secret campus-tls-cert -n s12-lab
+NAME              TYPE                DATA   AGE
+campus-tls-cert   kubernetes.io/tls   2      40s
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe secret campus-tls-cert -n s12-lab | tail -6
+Type:  kubernetes.io/tls
+
+Data
+====
+tls.crt:  1282 bytes
+tls.key:  1732 bytes
+
+PS D:\Users\user\Desktop\DevOps> kubectl get ingress campus-ingress-tls -n s12-lab
+NAME                 CLASS   HOSTS                     ADDRESS        PORTS     AGE
+campus-ingress-tls   nginx   secure.campus-s12.local   192.168.49.2   80, 443   40s
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe ingress campus-ingress-tls -n s12-lab | sed -n '1,14p'
+Name:             campus-ingress-tls
+Labels:           app=yatri-app
+Namespace:        s12-lab
+Address:          192.168.49.2
+Ingress Class:    nginx
+Default backend:  <default>
+TLS:
+  campus-tls-cert terminates secure.campus-s12.local
+Rules:
+  Host                     Path  Backends
+  ----                     ----  --------
+  secure.campus-s12.local  
+                           /   yatri-frontend-svc:80 (10.244.0.30:80)
+Annotations:               nginx.ingress.kubernetes.io/ssl-redirect: true
+

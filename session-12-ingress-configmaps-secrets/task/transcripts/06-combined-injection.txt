@@ -1,0 +1,31 @@
+PS D:\Users\user\Desktop\DevOps> kubectl apply -f 03-combined/backend.yaml
+deployment.apps/yatri-backend unchanged
+service/yatri-backend-svc unchanged
+
+PS D:\Users\user\Desktop\DevOps> kubectl rollout status deployment/yatri-backend -n s12-lab
+deployment "yatri-backend" successfully rolled out
+
+PS D:\Users\user\Desktop\DevOps> # bulk (envFrom configMapRef) + granular (secretKeyRef) values side by side
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab deploy/yatri-backend -- env | grep -E '^(ENVIRONMENT|LOG_LEVEL|PORT|DEFAULT_CURRENCY|MAX_BOOKING_DAYS|POSTGRES_USER|POSTGRES_PASSWORD)=' | sort
+DEFAULT_CURRENCY=INR
+ENVIRONMENT=production
+LOG_LEVEL=INFO
+MAX_BOOKING_DAYS=90
+PORT=8080
+POSTGRES_PASSWORD=secretpassword
+POSTGRES_USER=yatri_admin
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab deploy/yatri-backend -- sh -c 'ls /etc/app-config'
+DEFAULT_CURRENCY
+ENVIRONMENT
+LOG_LEVEL
+MAX_BOOKING_DAYS
+PORT
+
+PS D:\Users\user\Desktop\DevOps> kubectl get deploy yatri-backend -n s12-lab -o jsonpath='{.spec.template.spec.containers[0].envFrom}' && echo ''
+[{"configMapRef":{"name":"yatri-app-config"}}]
+
+PS D:\Users\user\Desktop\DevOps> kubectl get deploy yatri-backend -n s12-lab -o jsonpath='{range .spec.template.spec.containers[0].env[*]}{.name}{" <- secret/"}{.valueFrom.secretKeyRef.name}{":"}{.valueFrom.secretKeyRef.key}{"\n"}{end}'
+POSTGRES_USER <- secret/yatri-db-secret:POSTGRES_USER
+POSTGRES_PASSWORD <- secret/yatri-db-secret:POSTGRES_PASSWORD
+

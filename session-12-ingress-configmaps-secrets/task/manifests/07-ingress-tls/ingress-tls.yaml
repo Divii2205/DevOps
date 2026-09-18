@@ -1,0 +1,30 @@
+# Task 13 - TLS/HTTPS termination at the Ingress.
+# spec.tls binds the kubernetes.io/tls secret "campus-tls-cert" to the host,
+# so the NGINX controller presents that certificate on :443, terminates TLS,
+# and proxies plain HTTP to the ClusterIP service behind it.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: campus-ingress-tls
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - secure.campus-s12.local
+      secretName: campus-tls-cert
+  rules:
+    - host: secure.campus-s12.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yatri-frontend-svc
+                port:
+                  number: 80

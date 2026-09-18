@@ -1,0 +1,32 @@
+PS D:\Users\user\Desktop\DevOps> bash 08-full-demo/run-demo.sh 2>&1 | tail -30
+service/yatri-frontend-svc unchanged
+==> Ingress routing
+ingress.networking.k8s.io/yatri-ingress unchanged
+ingress.networking.k8s.io/campus-ingress-hybrid unchanged
+==> Waiting for rollouts
+deployment "yatri-backend" successfully rolled out
+deployment "yatri-frontend" successfully rolled out
+==> Stack:
+NAME                         DATA   AGE
+configmap/yatri-app-config   5      11m
+
+NAME                     TYPE     DATA   AGE
+secret/yatri-db-secret   Opaque   2      11m
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/yatri-backend    1/1     1            1           11m
+deployment.apps/yatri-frontend   1/1     1            1           11m
+
+NAME                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/yatri-backend-svc    ClusterIP   10.101.219.7     <none>        80/TCP    11m
+service/yatri-frontend-svc   ClusterIP   10.111.151.216   <none>        80/TCP    11m
+
+NAME                                              CLASS   HOSTS                                          ADDRESS        PORTS     AGE
+ingress.networking.k8s.io/campus-ingress-hybrid   nginx   portal.campus-s12.local,api.campus-s12.local   192.168.49.2   80        2m55s
+ingress.networking.k8s.io/campus-ingress-tls      nginx   secure.campus-s12.local                        192.168.49.2   80, 443   115s
+ingress.networking.k8s.io/yatri-ingress           nginx   yatri-s12.local                                192.168.49.2   80        4m38s
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/yatri-backend-7c44769979-th547    1/1     Running   0          9m14s
+pod/yatri-frontend-7cdf6977bd-txv6p   1/1     Running   0          11m
+

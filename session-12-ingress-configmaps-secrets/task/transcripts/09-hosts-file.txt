@@ -1,0 +1,29 @@
+PS D:\Users\user\Desktop\DevOps> minikube ip
+192.168.49.2
+
+PS D:\Users\user\Desktop\DevOps> # Windows equivalent of /etc/hosts (active, non-comment lines):
+PS D:\Users\user\Desktop\DevOps> grep -v '^#' /c/Windows/System32/drivers/etc/hosts | grep . 
+﻿# Copyright (c) 1993-2009 Microsoft Corp.
+100.129.161.51 host.docker.internal
+100.129.161.51 gateway.docker.internal
+127.0.0.1 kubernetes.docker.internal
+
+PS D:\Users\user\Desktop\DevOps> # Is this shell elevated? (editing hosts needs Administrator)
+PS D:\Users\user\Desktop\DevOps> powershell.exe -NoProfile -Command "([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)" | tr -d '\r'
+False
+
+PS D:\Users\user\Desktop\DevOps> # Zero-byte append probe (non-destructive) to prove write access is refused:
+PS D:\Users\user\Desktop\DevOps> printf '' >> /c/Windows/System32/drivers/etc/hosts && echo 'append allowed' || echo 'append DENIED - Administrator required'
+C:/Users/user/AppData/Local/Temp/claude/D--Users-user-Desktop-DevOps/a2d498db-96d5-4372-8bad-2bf2d86982a3/scratchpad/tools/cap.sh: line 18: /c/Windows/System32/drivers/etc/hosts: Permission denied
+append DENIED - Administrator required
+
+PS D:\Users\user\Desktop\DevOps> # Exact line to append from an elevated shell:
+PS D:\Users\user\Desktop\DevOps> echo "$(minikube ip)  yatri.local portal.campus.local api.campus.local secure.campus.local"
+192.168.49.2  yatri.local portal.campus.local api.campus.local secure.campus.local
+
+PS D:\Users\user\Desktop\DevOps> # ...but on the docker driver the node IP is not routable from Windows anyway:
+PS D:\Users\user\Desktop\DevOps> ping -n 1 -w 3000 $(minikube ip) | tr -d '\r' | tail -3
+
+Ping statistics for 192.168.49.2:
+    Packets: Sent = 1, Received = 0, Lost = 1 (100% loss),
+

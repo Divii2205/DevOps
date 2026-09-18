@@ -1,0 +1,19 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get configmap yatri-app-config -n s12-lab -o jsonpath='{.data.ENVIRONMENT}' && echo ""
+production
+
+PS D:\Users\user\Desktop\DevOps> kubectl get configmap yatri-app-config -n s12-lab -o jsonpath='{.data.LOG_LEVEL}' && echo ""
+INFO
+
+PS D:\Users\user\Desktop\DevOps> kubectl get configmap yatri-app-config -n s12-lab -o jsonpath='{.data.DEFAULT_CURRENCY}' && echo ""
+INR
+
+PS D:\Users\user\Desktop\DevOps> kubectl get configmap yatri-app-config -n s12-lab -o jsonpath='{.data.MAX_BOOKING_DAYS}' && echo ""
+90
+
+PS D:\Users\user\Desktop\DevOps> kubectl get configmap yatri-app-config -n s12-lab -o jsonpath='{range .data.*}{@}{"\n"}{end}'
+INFO
+90
+8080
+INR
+production
+

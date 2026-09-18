@@ -1,0 +1,23 @@
+PS D:\Users\user\Desktop\DevOps> # curl from inside the node - the controller binds hostPorts 80/443 there
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -s -o /dev/null -w 'HTTP %{http_code}\n' -H 'Host: yatri-s12.local' http://localhost/"
+HTTP 200
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -s -H 'Host: yatri-s12.local' http://localhost/" | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -s -H 'Host: yatri-s12.local' http://localhost/api/" | sed -n '1,11p'
+<html><head><title>Yatri Backend API</title></head><body>
+<h1>Yatri Backend API</h1>
+<pre>
+SERVED_BY:        yatri-backend-7c44769979-th547
+ENVIRONMENT:      production
+LOG_LEVEL:        INFO
+PORT:             8080
+DEFAULT_CURRENCY: INR
+MAX_BOOKING_DAYS: 90
+POSTGRES_USER:    yatri_admin
+POSTGRES_PASSWORD:secretpassword
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -s -o /dev/null -w 'unknown host -> HTTP %{http_code}\n' -H 'Host: nope.local' http://localhost/"
+unknown host -> HTTP 404
+

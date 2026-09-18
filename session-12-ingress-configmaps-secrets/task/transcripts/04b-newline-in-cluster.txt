@@ -1,0 +1,30 @@
+PS D:\Users\user\Desktop\DevOps> kubectl describe secret yatri-db-secret -n s12-lab | tail -5
+
+Data
+====
+POSTGRES_PASSWORD:  14 bytes
+POSTGRES_USER:      11 bytes
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe secret yatri-db-secret-bad -n s12-lab | tail -4
+
+Data
+====
+POSTGRES_PASSWORD:  15 bytes
+
+PS D:\Users\user\Desktop\DevOps> # inside the pod: env var bytes, good vs newline-corrupted
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab newline-probe -- sh -c 'printf "%s" "$PASS_GOOD" | od -c | head -3'
+0000000   s   e   c   r   e   t   p   a   s   s   w   o   r   d
+0000016
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab newline-probe -- sh -c 'printf "%s" "$PASS_BAD" | od -c | head -3'
+0000000   s   e   c   r   e   t   p   a   s   s   w   o   r   d  \n
+0000017
+
+PS D:\Users\user\Desktop\DevOps> # and as mounted secret files:
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab newline-probe -- sh -c 'wc -c < /etc/secret-good/POSTGRES_PASSWORD; wc -c < /etc/secret-bad/POSTGRES_PASSWORD'
+14
+15
+
+PS D:\Users\user\Desktop\DevOps> kubectl exec -n s12-lab newline-probe -- sh -c 'if [ "$PASS_BAD" = "secretpassword" ]; then echo "AUTH OK"; else echo "AUTH FAILED: password mismatch (len=$(printf %s "$PASS_BAD" | wc -c))"; fi'
+AUTH FAILED: password mismatch (len=15)
+

@@ -1,0 +1,26 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get ingress campus-ingress-hybrid -n s12-lab
+NAME                    CLASS   HOSTS                                          ADDRESS   PORTS   AGE
+campus-ingress-hybrid   nginx   portal.campus-s12.local,api.campus-s12.local             80      26s
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe ingress campus-ingress-hybrid -n s12-lab | sed -n '1,20p'
+Name:             campus-ingress-hybrid
+Labels:           app=yatri-app
+Namespace:        s12-lab
+Address:          
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host                     Path  Backends
+  ----                     ----  --------
+  portal.campus-s12.local  
+                           /api(/|$)(.*)   yatri-backend-svc:80 (10.244.0.35:80)
+                           /()(.*)         yatri-frontend-svc:80 (10.244.0.30:80)
+  api.campus-s12.local     
+                           /ui(/|$)(.*)   yatri-frontend-svc:80 (10.244.0.30:80)
+                           /()(.*)        yatri-backend-svc:80 (10.244.0.35:80)
+Annotations:               nginx.ingress.kubernetes.io/rewrite-target: /$2
+                           nginx.ingress.kubernetes.io/use-regex: true
+Events:
+  Type    Reason  Age   From                      Message
+  ----    ------  ----  ----                      -------
+

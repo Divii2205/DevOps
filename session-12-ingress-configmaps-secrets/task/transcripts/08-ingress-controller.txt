@@ -1,0 +1,22 @@
+PS D:\Users\user\Desktop\DevOps> minikube addons list | grep -i ingress | sed 's/\x1b\[[0-9;]*m//g'
+│ ingress                     │ minikube │ enabled ✅ │ Kubernetes                             │
+│ ingress-dns                 │ minikube │ disabled   │ minikube                               │
+
+PS D:\Users\user\Desktop\DevOps> kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS      RESTARTS      AGE
+ingress-nginx-admission-create-jdnn5       0/1     Completed   0             18h
+ingress-nginx-admission-patch-gkbzs        0/1     Completed   0             18h
+ingress-nginx-controller-d7cd8c989-qm6dx   1/1     Running     2 (11m ago)   18h
+
+PS D:\Users\user\Desktop\DevOps> kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
+pod/ingress-nginx-controller-d7cd8c989-qm6dx condition met
+
+PS D:\Users\user\Desktop\DevOps> kubectl get svc -n ingress-nginx
+NAME                                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller             NodePort    10.99.187.46    <none>        80:30946/TCP,443:32326/TCP   18h
+ingress-nginx-controller-admission   ClusterIP   10.102.129.93   <none>        443/TCP                      18h
+
+PS D:\Users\user\Desktop\DevOps> kubectl get ingressclass
+NAME              CONTROLLER             PARAMETERS   AGE
+nginx (default)   k8s.io/ingress-nginx   <none>       18h
+

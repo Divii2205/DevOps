@@ -1,0 +1,36 @@
+# Task 10 - Layer 7 PATH-based routing under a single host.
+#   http://yatri-s12.local/       -> yatri-frontend-svc  (default nginx welcome page)
+#   http://yatri-s12.local/api/   -> yatri-backend-svc   (config/secret dump page)
+# rewrite-target /$2 strips the /api prefix before proxying, so the backend
+# receives "/" and not "/api/".  Both paths are regexes (use-regex: "true"),
+# the frontend uses /()(.*) so that capture group $2 exists for it too.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: yatri-ingress
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: yatri-s12.local
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: yatri-backend-svc
+                port:
+                  number: 80
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: yatri-frontend-svc
+                port:
+                  number: 80

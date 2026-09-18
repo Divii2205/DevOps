@@ -1,0 +1,29 @@
+PS D:\Users\user\Desktop\DevOps> # ---- WRONG: plain echo appends 0x0a ----
+PS D:\Users\user\Desktop\DevOps> echo "secretpassword" | xxd
+00000000: 7365 6372 6574 7061 7373 776f 7264 0a    secretpassword.
+
+PS D:\Users\user\Desktop\DevOps> echo "secretpassword" | base64
+c2VjcmV0cGFzc3dvcmQK
+
+PS D:\Users\user\Desktop\DevOps> # ---- RIGHT: echo -n emits the exact byte stream ----
+PS D:\Users\user\Desktop\DevOps> echo -n "secretpassword" | xxd
+00000000: 7365 6372 6574 7061 7373 776f 7264       secretpassword
+
+PS D:\Users\user\Desktop\DevOps> echo -n "secretpassword" | base64
+c2VjcmV0cGFzc3dvcmQ=
+
+PS D:\Users\user\Desktop\DevOps> # ---- decode both back and compare raw bytes ----
+PS D:\Users\user\Desktop\DevOps> echo 'c2VjcmV0cGFzc3dvcmQK' | base64 -d | xxd
+00000000: 7365 6372 6574 7061 7373 776f 7264 0a    secretpassword.
+
+PS D:\Users\user\Desktop\DevOps> echo 'c2VjcmV0cGFzc3dvcmQ=' | base64 -d | xxd
+00000000: 7365 6372 6574 7061 7373 776f 7264       secretpassword
+
+PS D:\Users\user\Desktop\DevOps> echo "Wrong (with newline): $(echo "secretpassword" | base64)"; echo "Right (no newline):   $(echo -n "secretpassword" | base64)"
+Wrong (with newline): c2VjcmV0cGFzc3dvcmQK
+Right (no newline):   c2VjcmV0cGFzc3dvcmQ=
+
+PS D:\Users\user\Desktop\DevOps> echo -n 'c2VjcmV0cGFzc3dvcmQK' | base64 -d | wc -c; echo -n 'c2VjcmV0cGFzc3dvcmQ=' | base64 -d | wc -c
+15
+14
+

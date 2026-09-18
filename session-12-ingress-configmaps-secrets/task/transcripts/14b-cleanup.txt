@@ -1,0 +1,19 @@
+PS D:\Users\user\Desktop\DevOps> bash 08-full-demo/cleanup.sh 2>&1 | tail -20
+ingress.networking.k8s.io "campus-ingress-hybrid" deleted from s12-lab namespace
+ingress.networking.k8s.io "campus-ingress-tls" deleted from s12-lab namespace
+ingress.networking.k8s.io "yatri-ingress" deleted from s12-lab namespace
+deployment.apps "yatri-backend" deleted from s12-lab namespace
+deployment.apps "yatri-frontend" deleted from s12-lab namespace
+service "yatri-backend-svc" deleted from s12-lab namespace
+service "yatri-frontend-svc" deleted from s12-lab namespace
+configmap "yatri-app-config" deleted from s12-lab namespace
+secret "yatri-db-secret" deleted from s12-lab namespace
+secret "campus-tls-cert" deleted from s12-lab namespace
+==> Remaining in s12-lab:
+NAME                                  READY   STATUS      RESTARTS   AGE
+pod/yatri-backend-7c44769979-th547    0/1     Completed   0          9m28s
+pod/yatri-frontend-7cdf6977bd-txv6p   0/1     Completed   0          11m
+
+PS D:\Users\user\Desktop\DevOps> kubectl get ingress,deploy,svc -n s12-lab
+No resources found in s12-lab namespace.
+

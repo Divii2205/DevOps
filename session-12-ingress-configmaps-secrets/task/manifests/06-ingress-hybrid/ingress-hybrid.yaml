@@ -1,0 +1,53 @@
+# Task 12 - HYBRID routing: host-based virtual hosts AND path-based rules
+# inside one single Ingress resource. Four distinct host+path combinations:
+#   portal.campus-s12.local/      -> frontend
+#   portal.campus-s12.local/api/  -> backend  (prefix stripped by rewrite /$2)
+#   api.campus-s12.local/         -> backend
+#   api.campus-s12.local/ui/      -> frontend (prefix stripped by rewrite /$2)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: campus-ingress-hybrid
+  namespace: s12-lab
+  labels:
+    app: yatri-app
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: portal.campus-s12.local
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: yatri-backend-svc
+                port:
+                  number: 80
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: yatri-frontend-svc
+                port:
+                  number: 80
+    - host: api.campus-s12.local
+      http:
+        paths:
+          - path: /ui(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: yatri-frontend-svc
+                port:
+                  number: 80
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: yatri-backend-svc
+                port:
+                  number: 80

@@ -1,0 +1,31 @@
+PS D:\Users\user\Desktop\DevOps> kubectl get ingress campus-ingress-host -n s12-lab
+NAME                  CLASS   HOSTS                                          ADDRESS        PORTS   AGE
+campus-ingress-host   nginx   portal.campus-s12.local,api.campus-s12.local   192.168.49.2   80      20s
+
+PS D:\Users\user\Desktop\DevOps> kubectl describe ingress campus-ingress-host -n s12-lab | sed -n '1,16p'
+Name:             campus-ingress-host
+Labels:           app=yatri-app
+Namespace:        s12-lab
+Address:          192.168.49.2
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host                     Path  Backends
+  ----                     ----  --------
+  portal.campus-s12.local  
+                           /   yatri-frontend-svc:80 (10.244.0.30:80)
+  api.campus-s12.local     
+                           /   yatri-backend-svc:80 (10.244.0.35:80)
+Annotations:               <none>
+Events:
+  Type    Reason  Age               From                      Message
+
+PS D:\Users\user\Desktop\DevOps> # same IP, same port - only the Host header differs:
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -s -H 'Host: portal.campus-s12.local' http://localhost/" | grep -i title
+<title>Welcome to nginx!</title>
+
+PS D:\Users\user\Desktop\DevOps> minikube ssh -- "curl -s -H 'Host: api.campus-s12.local' http://localhost/" | grep -E -i 'title|ENVIRONMENT|POSTGRES_USER'
+<html><head><title>Yatri Backend API</title></head><body>
+ENVIRONMENT:      production
+POSTGRES_USER:    yatri_admin
+
