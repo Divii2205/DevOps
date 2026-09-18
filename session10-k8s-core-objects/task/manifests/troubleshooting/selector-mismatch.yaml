@@ -1,0 +1,24 @@
+# ==============================================================================
+# INTENTIONALLY BROKEN - IMMUTABLE SELECTOR DRILL
+# spec.selector.matchLabels.app != spec.template.metadata.labels.app
+# The API server rejects this at admission time; nothing is ever written to etcd.
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selector-error-demo
+  namespace: s10-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: correct-app-name
+  template:
+    metadata:
+      labels:
+        # BUG: does not match spec.selector.matchLabels above
+        app: wrong-app-name
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine

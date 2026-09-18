@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-logging-agent
+  namespace: s10-lab
+  labels:
+    app: node-logging-agent
+spec:
+  selector:
+    matchLabels:
+      app: node-logging-agent
+  template:
+    metadata:
+      labels:
+        app: node-logging-agent
+    spec:
+      # Tolerate the control-plane taint so the agent also lands on control-plane
+      # nodes - a real host-telemetry agent must cover EVERY node.
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: fluent-logger
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - 'while true; do echo "[$(date)] Collecting host system metrics on $(cat /etc/hostname)"; sleep 10; done'
+          resources:
+            requests: { cpu: "10m", memory: "16Mi" }
+            limits:   { cpu: "50m", memory: "32Mi" }

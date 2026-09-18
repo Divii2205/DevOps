@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lifecycle-multi-container
+  namespace: s10-lab
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+      resources:
+        requests: { cpu: "20m", memory: "32Mi" }
+        limits:   { cpu: "100m", memory: "96Mi" }
+    - name: sidecar
+      image: busybox:1.36
+      command: ["sh", "-c", "while true; do echo 'Sidecar is running'; sleep 10; done"]

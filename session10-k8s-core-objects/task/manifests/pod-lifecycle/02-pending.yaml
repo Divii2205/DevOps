@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lifecycle-pending
+  namespace: s10-lab
+spec:
+  containers:
+    - name: impossible-resource
+      image: nginx:1.27
+      resources:
+        requests:
+          cpu: "1"
+          memory: "32Gi"   # larger than the node's allocatable memory -> unschedulable

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-pod
+  namespace: s10-lab
+spec:
+  restartPolicy: Never
+  containers:
+    - name: hello
+      image: busybox:1.36
+      command: ["sh", "-c", "echo Hello Kubernetes; sleep 8; echo Batch job finished"]

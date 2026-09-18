@@ -1,0 +1,24 @@
+# ==============================================================================
+# CORRECTED MANIFEST - selector and pod template labels now agree
+# spec.selector.matchLabels.app != spec.template.metadata.labels.app
+# The API server rejects this at admission time; nothing is ever written to etcd.
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selector-error-demo
+  namespace: s10-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: correct-app-name
+  template:
+    metadata:
+      labels:
+        # FIXED: now matches spec.selector.matchLabels
+        app: correct-app-name
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine

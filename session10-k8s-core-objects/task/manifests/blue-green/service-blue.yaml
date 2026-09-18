@@ -1,0 +1,20 @@
+# The Service is the ONLY switch. Changing spec.selector.slot re-points 100% of
+# traffic to the other environment in a single atomic API update.
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+  namespace: s10-lab
+  labels:
+    app: myapp
+spec:
+  type: NodePort
+  selector:
+    app: myapp
+    slot: blue          # <-- THE SWITCH
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30120
+      protocol: TCP

@@ -1,0 +1,20 @@
+# ONE Service selects BOTH Deployments via the single shared label app=myapp-canary.
+# kube-proxy load-balances across every Ready endpoint, so the traffic split is
+# simply the pod-count ratio:  9 stable : 1 canary  =  90% / 10%.
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-canary-service
+  namespace: s10-lab
+  labels:
+    app: myapp-canary
+spec:
+  type: NodePort
+  selector:
+    app: myapp-canary       # deliberately does NOT include 'track'
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30130
+      protocol: TCP
