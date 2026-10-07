@@ -1,0 +1,11 @@
+$ kubectl apply -f mini-project/hpa.yaml
+horizontalpodautoscaler.autoscaling/web-app-hpa created
+
+$ sleep 30; kubectl get hpa -n production-webapp
+NAME          REFERENCE            TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 1%/50%   2         5         2          30s
+
+$ kubectl top pods -n production-webapp
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-5fffv   1m           7Mi             
+web-app-d45775485-l97n9   1m           7Mi             

@@ -1,0 +1,22 @@
+$ kubectl apply -f 01-volumes/hostpath-pod.yaml
+pod/hostpath-demo created
+
+$ kubectl wait --for=condition=Ready pod/hostpath-demo --timeout=120s
+pod/hostpath-demo condition met
+
+$ kubectl exec hostpath-demo -- sh -c 'echo "Saved on the node" > /data/node.txt'
+
+$ kubectl delete pod hostpath-demo
+pod "hostpath-demo" deleted from default namespace
+
+$ kubectl apply -f 01-volumes/hostpath-pod.yaml
+pod/hostpath-demo created
+
+$ kubectl wait --for=condition=Ready pod/hostpath-demo --timeout=120s
+pod/hostpath-demo condition met
+
+$ kubectl exec hostpath-demo -- cat /data/node.txt
+Saved on the node
+
+$ minikube ssh -- cat /tmp/hostpath-data/node.txt
+Saved on the node

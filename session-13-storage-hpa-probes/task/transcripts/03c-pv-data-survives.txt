@@ -1,0 +1,19 @@
+$ kubectl apply -f 02-persistent-storage/pod.yaml
+pod/storage-demo created
+
+$ kubectl wait --for=condition=Ready pod/storage-demo --timeout=120s
+pod/storage-demo condition met
+
+$ kubectl exec storage-demo -- sh -c 'echo "Kubernetes Storage" > /data/message.txt'
+
+$ kubectl delete pod storage-demo
+pod "storage-demo" deleted from default namespace
+
+$ kubectl apply -f 02-persistent-storage/pod.yaml
+pod/storage-demo created
+
+$ kubectl wait --for=condition=Ready pod/storage-demo --timeout=120s
+pod/storage-demo condition met
+
+$ kubectl exec storage-demo -- cat /data/message.txt
+Kubernetes Storage

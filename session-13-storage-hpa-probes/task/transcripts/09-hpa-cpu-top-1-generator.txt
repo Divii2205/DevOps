@@ -1,0 +1,26 @@
+$ kubectl top pods; kubectl get hpa      # run about once a minute after load started
+--- 20:41:39
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   0m           7Mi             
+NAME       REFERENCE             TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 0%/50%   1         5         1          102s
+--- 20:42:34
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   68m          7Mi             
+load-generator              813m         8Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 68%/50%   1         5         2          2m38s
+--- 20:43:30
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   46m          7Mi             
+hpa-demo-5d6676989b-nxqsr   47m          7Mi             
+load-generator              826m         7Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 46%/50%   1         5         2          3m33s
+--- 20:44:25
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   43m          7Mi             
+hpa-demo-5d6676989b-nxqsr   44m          7Mi             
+load-generator              819m         8Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 43%/50%   1         5         2          4m28s

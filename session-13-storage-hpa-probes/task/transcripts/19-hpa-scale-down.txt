@@ -1,0 +1,29 @@
+$ kubectl delete -f task/02-hpa-hands-on/load-generator.yaml
+pod "load-generator" deleted from default namespace
+
+$ kubectl delete pod load-generator-2 load-generator-3
+pod "load-generator-2" deleted from default namespace
+pod "load-generator-3" deleted from default namespace
+
+$ kubectl get hpa hpa-demo -w
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 37%/50%   1         5         3          15m
+hpa-demo   Deployment/hpa-demo   cpu: 43%/50%   1         5         3          15m
+hpa-demo   Deployment/hpa-demo   cpu: 34%/50%   1         5         3          16m
+hpa-demo   Deployment/hpa-demo   cpu: 0%/50%    1         5         3          17m
+hpa-demo   Deployment/hpa-demo   cpu: 0%/50%    1         5         3          22m
+hpa-demo   Deployment/hpa-demo   cpu: 0%/50%    1         5         1          22m
+
+$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-lxhrw   1/1     Running   0          25m
+
+$ kubectl describe hpa hpa-demo | tail -8
+  ScalingLimited  True    TooFewReplicas    the desired replica count is less than the minimum replica count
+  ScaledToZero    False   NotScaledToZero   the HPA controller did not scale the workload to zero
+Events:
+  Type    Reason             Age   From                       Message
+  ----    ------             ----  ----                       -------
+  Normal  SuccessfulRescale  22m   horizontal-pod-autoscaler  New size: 2; reason: cpu resource utilization (percentage of request) above target
+  Normal  SuccessfulRescale  12m   horizontal-pod-autoscaler  New size: 3; reason: cpu resource utilization (percentage of request) above target
+  Normal  SuccessfulRescale  86s   horizontal-pod-autoscaler  New size: 1; reason: All metrics below target

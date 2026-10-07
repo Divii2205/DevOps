@@ -1,0 +1,21 @@
+$ kubectl apply -f 04-hpa/deployment.yaml
+deployment.apps/hpa-demo created
+
+$ kubectl apply -f 04-hpa/service.yaml
+service/hpa-demo-service created
+
+$ kubectl rollout status deployment/hpa-demo --timeout=120s
+Waiting for deployment "hpa-demo" rollout to finish: 0 of 1 updated replicas are available...
+deployment "hpa-demo" successfully rolled out
+
+$ kubectl get deployment hpa-demo
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+hpa-demo   1/1     1            1           2s
+
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-lxhrw   1/1     Running   0          2s
+
+$ kubectl get svc hpa-demo-service
+NAME               TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+hpa-demo-service   ClusterIP   10.98.222.147   <none>        80/TCP    2s

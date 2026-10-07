@@ -1,0 +1,18 @@
+$ kubectl describe hpa web-app-hpa -n production-webapp | tail -12
+  Type            Status  Reason              Message
+  ----            ------  ------              -------
+  AbleToScale     True    ReadyForNewScale    recommended size matches current size
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+  ScaledToZero    False   NotScaledToZero     the HPA controller did not scale the workload to zero
+Events:
+  Type     Reason                        Age                From                       Message
+  ----     ------                        ----               ----                       -------
+  Warning  FailedGetResourceMetric       13m (x2 over 13m)  horizontal-pod-autoscaler  failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Warning  FailedComputeMetricsReplicas  13m (x2 over 13m)  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Normal   SuccessfulRescale             4m23s              horizontal-pod-autoscaler  New size: 3; reason: cpu resource utilization (percentage of request) above target
+
+$ for p in $(kubectl get pods -n production-webapp -l app=web-app -o jsonpath='{.items[*].metadata.name}'); do echo "$p -> $(kubectl exec -n production-webapp $p -- cat /data/student.txt)"; done
+web-app-d45775485-bbbtt -> Student: Divii2205
+web-app-d45775485-kl6vb -> Student: Divii2205
+web-app-d45775485-l97n9 -> Student: Divii2205

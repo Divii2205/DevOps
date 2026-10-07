@@ -1,0 +1,37 @@
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 37%/50%   1         5         3          15m
+
+$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-lxhrw   1/1     Running   0          16m
+hpa-demo-5d6676989b-nxqsr   1/1     Running   0          13m
+hpa-demo-5d6676989b-x87pg   1/1     Running   0          3m23s
+load-generator              1/1     Running   0          14m
+load-generator-2            1/1     Running   0          5m23s
+load-generator-3            1/1     Running   0          5m22s
+
+$ kubectl describe hpa hpa-demo
+Name:                                                  hpa-demo
+Namespace:                                             default
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Wed, 07 Oct 2026 20:39:57 +0530
+Reference:                                             Deployment/hpa-demo
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  37% (37m) / 50%
+Min replicas:                                          1
+Max replicas:                                          5
+Deployment pods:                                       3 current / 3 desired
+Conditions:
+  Type            Status  Reason              Message
+  ----            ------  ------              -------
+  AbleToScale     True    ReadyForNewScale    recommended size matches current size
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+  ScaledToZero    False   NotScaledToZero     the HPA controller did not scale the workload to zero
+Events:
+  Type    Reason             Age    From                       Message
+  ----    ------             ----   ----                       -------
+  Normal  SuccessfulRescale  13m    horizontal-pod-autoscaler  New size: 2; reason: cpu resource utilization (percentage of request) above target
+  Normal  SuccessfulRescale  3m24s  horizontal-pod-autoscaler  New size: 3; reason: cpu resource utilization (percentage of request) above target

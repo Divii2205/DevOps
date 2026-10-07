@@ -1,0 +1,28 @@
+$ kubectl get storageclass
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard (default)   k8s.io/minikube-hostpath   Delete          Immediate           false                  22d
+
+$ kubectl describe storageclass standard
+Name:            standard
+IsDefaultClass:  Yes
+Annotations:     kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"},"labels":{"addonmanager.kubernetes.io/mode":"EnsureExists"},"name":"standard"},"provisioner":"k8s.io/minikube-hostpath"}
+,storageclass.kubernetes.io/is-default-class=true
+Provisioner:           k8s.io/minikube-hostpath
+Parameters:            <none>
+AllowVolumeExpansion:  <unset>
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+
+$ kubectl apply -f 03-storageclass/pvc.yaml
+persistentvolumeclaim/dynamic-pvc created
+
+$ kubectl get pvc dynamic-pvc
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+dynamic-pvc   Bound    pvc-efe68d65-e8c2-40cd-a3ee-8473b13740ad   500Mi      RWO            standard       <unset>                 1s
+
+$ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pvc-efe68d65-e8c2-40cd-a3ee-8473b13740ad   500Mi      RWO            Delete           Bound    default/dynamic-pvc   standard       <unset>                          1s
+student-pv                                 1Gi        RWO            Retain           Bound    default/student-pvc                  <unset>                          59s

@@ -1,0 +1,18 @@
+$ kubectl apply -f 02-persistent-storage/pv.yaml
+persistentvolume/student-pv created
+
+$ kubectl get pv student-pv
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+student-pv   1Gi        RWO            Retain           Available                          <unset>                          0s
+
+$ kubectl apply -f 02-persistent-storage/pvc.yaml
+persistentvolumeclaim/student-pvc created
+
+$ kubectl get pvc student-pvc
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+student-pvc   Bound    pvc-aeac0738-72df-41c6-9ca0-56515a3c3fb0   500Mi      RWO            standard       <unset>                 1s
+
+$ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pvc-aeac0738-72df-41c6-9ca0-56515a3c3fb0   500Mi      RWO            Delete           Bound       default/student-pvc   standard       <unset>                          1s
+student-pv                                 1Gi        RWO            Retain           Available                                        <unset>                          1s

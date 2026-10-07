@@ -1,0 +1,15 @@
+$ kubectl port-forward -n production-webapp svc/web-service 8080:80
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+
+# --- in a second terminal ---
+$ curl -s http://localhost:8080 | head -n 6
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+
+$ curl -s -o /dev/null -w 'HTTP status: %{http_code}\n' http://localhost:8080
+HTTP status: 200

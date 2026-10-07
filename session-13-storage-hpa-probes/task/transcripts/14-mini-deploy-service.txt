@@ -1,0 +1,23 @@
+$ kubectl apply -f mini-project/deployment.yaml
+deployment.apps/web-app created
+
+$ kubectl apply -f mini-project/service.yaml
+service/web-service created
+
+$ kubectl rollout status deployment/web-app -n production-webapp --timeout=180s
+Waiting for deployment "web-app" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "web-app" rollout to finish: 1 of 2 updated replicas are available...
+deployment "web-app" successfully rolled out
+
+$ kubectl get pods -n production-webapp -o wide
+NAME                      READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+web-app-d45775485-5fffv   1/1     Running   0          16s   10.244.0.22   minikube   <none>           <none>
+web-app-d45775485-l97n9   1/1     Running   0          16s   10.244.0.23   minikube   <none>           <none>
+
+$ kubectl get svc,endpoints -n production-webapp
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/web-service   ClusterIP   10.107.32.176   <none>        80/TCP    16s
+
+NAME                    ENDPOINTS                       AGE
+endpoints/web-service   10.244.0.22:80,10.244.0.23:80   15s

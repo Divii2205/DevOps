@@ -1,0 +1,12 @@
+$ kubectl delete pod emptydir-demo
+pod "emptydir-demo" deleted from default namespace
+
+$ kubectl apply -f 01-volumes/emptydir-pod.yaml
+pod/emptydir-demo created
+
+$ kubectl wait --for=condition=Ready pod/emptydir-demo --timeout=120s
+pod/emptydir-demo condition met
+
+$ kubectl exec emptydir-demo -- cat /data/message.txt
+cat: /data/message.txt: No such file or directory
+command terminated with exit code 1

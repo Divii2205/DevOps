@@ -1,0 +1,22 @@
+$ kubectl delete pod load-generator load-generator-2 load-generator-3 -n production-webapp
+pod "load-generator" deleted from production-webapp namespace
+pod "load-generator-2" deleted from production-webapp namespace
+pod "load-generator-3" deleted from production-webapp namespace
+
+[killed]
+
+$ kubectl get hpa -n production-webapp -w
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 37%/50%   2         5         3          14m
+web-app-hpa   Deployment/web-app   cpu: 38%/50%   2         5         3          14m
+web-app-hpa   Deployment/web-app   cpu: 17%/50%   2         5         3          15m
+web-app-hpa   Deployment/web-app   cpu: 1%/50%    2         5         3          16m
+
+$ kubectl get hpa,pods -n production-webapp
+NAME                                              REFERENCE            TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/web-app-hpa   Deployment/web-app   cpu: 1%/50%   2         5         3          19m
+
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/web-app-d45775485-bbbtt   1/1     Running   0          9m36s
+pod/web-app-d45775485-kl6vb   1/1     Running   0          18m
+pod/web-app-d45775485-l97n9   1/1     Running   0          20m

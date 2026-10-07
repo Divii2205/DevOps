@@ -1,0 +1,13 @@
+$ kubectl delete pvc student-pvc
+persistentvolumeclaim "student-pvc" deleted from default namespace
+
+$ kubectl apply -f task/01-kubernetes-volumes/manifests/static-pvc.yaml
+persistentvolumeclaim/student-pvc created
+
+$ kubectl get pvc student-pvc
+NAME          STATUS   VOLUME       CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+student-pvc   Bound    student-pv   1Gi        RWO                           <unset>                 1s
+
+$ kubectl get pv student-pv
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+student-pv   1Gi        RWO            Retain           Bound    default/student-pvc                  <unset>                          42s

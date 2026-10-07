@@ -1,0 +1,12 @@
+$ kubectl apply -f mini-project/namespace.yaml
+namespace/production-webapp created
+
+$ kubectl apply -f mini-project/pvc.yaml
+persistentvolumeclaim/web-data created
+
+$ kubectl get pvc -n production-webapp
+NAME       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+web-data   Bound    pvc-461bbee2-fc9e-406a-91c8-ed9b14c3f91d   500Mi      RWO            standard       <unset>                 1s
+
+$ kubectl get pv | grep web-data
+pvc-461bbee2-fc9e-406a-91c8-ed9b14c3f91d   500Mi      RWO            Delete           Bound    production-webapp/web-data   standard       <unset>                          1s

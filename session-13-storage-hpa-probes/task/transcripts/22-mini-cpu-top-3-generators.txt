@@ -1,0 +1,59 @@
+$ kubectl top pods -n production-webapp; kubectl get hpa -n production-webapp      # about once a minute
+--- 21:06:03
+NAME                      CPU(cores)   MEMORY(bytes)   
+load-generator            553m         3Mi             
+load-generator-2          301m         1Mi             
+load-generator-3          307m         1Mi             
+web-app-d45775485-kl6vb   50m          7Mi             
+web-app-d45775485-l97n9   50m          7Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 50%/50%   2         5         2          8m37s
+--- 21:07:02
+NAME                      CPU(cores)   MEMORY(bytes)   
+load-generator            320m         2Mi             
+load-generator-2          318m         2Mi             
+load-generator-3          317m         1Mi             
+web-app-d45775485-kl6vb   56m          7Mi             
+web-app-d45775485-l97n9   57m          7Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 56%/50%   2         5         2          9m37s
+--- 21:08:02
+NAME                      CPU(cores)   MEMORY(bytes)   
+load-generator            307m         2Mi             
+load-generator-2          310m         2Mi             
+load-generator-3          310m         2Mi             
+web-app-d45775485-bbbtt   53m          7Mi             
+web-app-d45775485-kl6vb   43m          7Mi             
+web-app-d45775485-l97n9   44m          7Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 43%/50%   2         5         3          10m
+--- 21:09:00
+NAME                      CPU(cores)   MEMORY(bytes)   
+load-generator            333m         3Mi             
+load-generator-2          332m         3Mi             
+load-generator-3          332m         1Mi             
+web-app-d45775485-bbbtt   39m          7Mi             
+web-app-d45775485-kl6vb   38m          7Mi             
+web-app-d45775485-l97n9   40m          7Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 39%/50%   2         5         3          11m
+--- 21:09:59
+NAME                      CPU(cores)   MEMORY(bytes)   
+load-generator            323m         3Mi             
+load-generator-2          322m         2Mi             
+load-generator-3          324m         1Mi             
+web-app-d45775485-bbbtt   38m          7Mi             
+web-app-d45775485-kl6vb   37m          7Mi             
+web-app-d45775485-l97n9   38m          7Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 37%/50%   2         5         3          12m
+--- 21:10:58
+NAME                      CPU(cores)   MEMORY(bytes)   
+load-generator            322m         2Mi             
+load-generator-2          326m         2Mi             
+load-generator-3          317m         3Mi             
+web-app-d45775485-bbbtt   36m          7Mi             
+web-app-d45775485-kl6vb   37m          7Mi             
+web-app-d45775485-l97n9   38m          7Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 37%/50%   2         5         3          13m

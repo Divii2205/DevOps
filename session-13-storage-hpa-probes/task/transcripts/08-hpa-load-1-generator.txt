@@ -1,0 +1,20 @@
+$ kubectl apply -f task/02-hpa-hands-on/load-generator.yaml
+pod/load-generator created
+
+$ kubectl get hpa hpa-demo -w
+NAME       REFERENCE             TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 0%/50%   1         5         1          43s
+hpa-demo   Deployment/hpa-demo   cpu: 68%/50%   1         5         1          112s
+hpa-demo   Deployment/hpa-demo   cpu: 68%/50%   1         5         2          2m7s
+hpa-demo   Deployment/hpa-demo   cpu: 46%/50%   1         5         2          2m52s
+hpa-demo   Deployment/hpa-demo   cpu: 43%/50%   1         5         2          3m52s
+
+$ kubectl get pods -l app=hpa-demo -w
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-lxhrw   1/1     Running   0          2m16s
+hpa-demo-5d6676989b-nxqsr   0/1     Pending   0          0s
+hpa-demo-5d6676989b-nxqsr   0/1     Pending   0          0s
+hpa-demo-5d6676989b-nxqsr   0/1     ContainerCreating   0          1s
+hpa-demo-5d6676989b-nxqsr   0/1     ContainerCreating   0          2s
+hpa-demo-5d6676989b-nxqsr   1/1     Running             0          3s
+hpa-demo-5d6676989b-nxqsr   1/1     Running             0          80s

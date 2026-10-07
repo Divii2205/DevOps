@@ -1,0 +1,16 @@
+$ kubectl delete pod storage-demo
+pod "storage-demo" deleted from default namespace
+
+$ kubectl delete pvc dynamic-pvc student-pvc
+persistentvolumeclaim "dynamic-pvc" deleted from default namespace
+persistentvolumeclaim "student-pvc" deleted from default namespace
+
+$ sleep 5; kubectl get pv
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+student-pv   1Gi        RWO            Retain           Released   default/student-pvc                  <unset>                          79s
+
+$ kubectl delete pv student-pv
+persistentvolume "student-pv" deleted
+
+$ kubectl get pods,pvc,pv
+No resources found

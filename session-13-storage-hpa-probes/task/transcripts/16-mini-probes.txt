@@ -1,0 +1,10 @@
+$ kubectl describe pod web-app-d45775485-5fffv -n production-webapp | grep -E 'Liveness|Readiness|Startup|Ready:|Restart Count|Mounts|/data|ClaimName'
+    Ready:          True
+    Restart Count:  0
+    Liveness:     http-get http://:80/ delay=5s timeout=2s period=5s #success=1 #failure=3
+    Readiness:    http-get http://:80/ delay=5s timeout=2s period=5s #success=1 #failure=2
+    Startup:      http-get http://:80/ delay=0s timeout=1s period=2s #success=1 #failure=30
+    Mounts:
+      /data from persistent-storage (rw)
+    ClaimName:  web-data
+  Warning  Unhealthy  96s   kubelet            Startup probe failed: Get "http://10.244.0.22:80/": dial tcp 10.244.0.22:80: connect: connection refused

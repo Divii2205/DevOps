@@ -1,0 +1,15 @@
+# Same claim as 02-persistent-storage/pvc.yaml, but with storageClassName: ""
+# The empty class tells Kubernetes "do NOT use the default StorageClass",
+# so this claim binds to the manually created student-pv instead of
+# getting a new dynamically created volume.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: student-pvc
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi

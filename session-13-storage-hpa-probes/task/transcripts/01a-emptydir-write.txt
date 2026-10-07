@@ -1,0 +1,14 @@
+$ kubectl apply -f 01-volumes/emptydir-pod.yaml
+pod/emptydir-demo created
+
+$ kubectl wait --for=condition=Ready pod/emptydir-demo --timeout=120s
+pod/emptydir-demo condition met
+
+$ kubectl get pod emptydir-demo
+NAME            READY   STATUS    RESTARTS   AGE
+emptydir-demo   1/1     Running   0          4s
+
+$ kubectl exec emptydir-demo -- sh -c 'echo "Hello Kubernetes" > /data/message.txt'
+
+$ kubectl exec emptydir-demo -- cat /data/message.txt
+Hello Kubernetes

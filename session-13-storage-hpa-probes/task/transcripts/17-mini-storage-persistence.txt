@@ -1,0 +1,19 @@
+$ POD_NAME=$(kubectl get pods -n production-webapp -l app=web-app -o jsonpath='{.items[0].metadata.name}'); echo $POD_NAME; kubectl exec -n production-webapp "$POD_NAME" -- sh -c 'echo "Student: Divii2205" > /data/student.txt'; kubectl exec -n production-webapp "$POD_NAME" -- cat /data/student.txt
+web-app-d45775485-5fffv
+Student: Divii2205
+
+$ kubectl delete pod -n production-webapp $(kubectl get pods -n production-webapp -l app=web-app -o jsonpath='{.items[0].metadata.name}')
+pod "web-app-d45775485-5fffv" deleted from production-webapp namespace
+
+$ kubectl wait --for=condition=Ready pod -l app=web-app -n production-webapp --timeout=120s
+pod/web-app-d45775485-kl6vb condition met
+pod/web-app-d45775485-l97n9 condition met
+
+$ kubectl get pods -n production-webapp
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-kl6vb   1/1     Running   0          10s
+web-app-d45775485-l97n9   1/1     Running   0          2m7s
+
+$ for p in $(kubectl get pods -n production-webapp -l app=web-app -o jsonpath='{.items[*].metadata.name}'); do echo "$p -> $(kubectl exec -n production-webapp $p -- cat /data/student.txt)"; done
+web-app-d45775485-kl6vb -> Student: Divii2205
+web-app-d45775485-l97n9 -> Student: Divii2205

@@ -1,0 +1,49 @@
+$ kubectl top pods; kubectl get hpa      # run about once a minute after more load was added
+--- 20:50:56
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   55m          7Mi             
+hpa-demo-5d6676989b-nxqsr   52m          7Mi             
+load-generator              502m         5Mi             
+load-generator-2            351m         2Mi             
+load-generator-3            349m         1Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 53%/50%   1         5         2          10m
+--- 20:51:59
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   61m          8Mi             
+hpa-demo-5d6676989b-nxqsr   63m          7Mi             
+load-generator              355m         5Mi             
+load-generator-2            357m         2Mi             
+load-generator-3            357m         2Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 62%/50%   1         5         2          12m
+--- 20:52:58
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   50m          7Mi             
+hpa-demo-5d6676989b-nxqsr   45m          7Mi             
+hpa-demo-5d6676989b-x87pg   62m          7Mi             
+load-generator              342m         4Mi             
+load-generator-2            329m         2Mi             
+load-generator-3            331m         2Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 47%/50%   1         5         3          13m
+--- 20:53:58
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   42m          7Mi             
+hpa-demo-5d6676989b-nxqsr   42m          7Mi             
+hpa-demo-5d6676989b-x87pg   42m          7Mi             
+load-generator              353m         5Mi             
+load-generator-2            350m         2Mi             
+load-generator-3            350m         2Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 42%/50%   1         5         3          14m
+--- 20:54:56
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-lxhrw   37m          7Mi             
+hpa-demo-5d6676989b-nxqsr   38m          7Mi             
+hpa-demo-5d6676989b-x87pg   38m          7Mi             
+load-generator              336m         5Mi             
+load-generator-2            333m         2Mi             
+load-generator-3            332m         2Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 37%/50%   1         5         3          15m
