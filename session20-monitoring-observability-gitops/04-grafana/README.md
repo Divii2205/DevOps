@@ -200,3 +200,7 @@ Remember:
 Prometheus -> collects/stores metrics
 Grafana    -> visualizes metrics
 ```
+
+
+![alt text](image.png)
+![alt text](image-1.png)
