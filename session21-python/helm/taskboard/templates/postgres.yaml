@@ -5,6 +5,7 @@ type: Opaque
 stringData:
   username: {{ .Values.postgres.username | quote }}
   password: {{ .Values.postgres.password | quote }}
+  database-url: "postgresql+psycopg://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@{{ .Values.postgres.host }}:5432/{{ .Values.postgres.database }}"
 ---
 apiVersion: v1
 kind: Service

@@ -1,7 +1,8 @@
+# Named "backend" because the frontend nginx proxies /api/ to http://backend:8000
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "taskboard.fullname" . }}-backend
+  name: backend
   labels: {app: taskboard-backend}
 spec:
   selector: {app: taskboard-backend}

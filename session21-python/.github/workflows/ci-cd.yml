@@ -1,12 +1,19 @@
-name: TaskBoard Python CI/CD
+# TaskBoard CI/CD + DevSecOps + GitOps
+# test -> security gates (secrets, SAST, SCA) -> build + image scan + push -> GitOps deploy
+name: TaskBoard CI/CD
 on:
   push:
     branches: [main]
+    paths-ignore: ['gitops/**']      # the GitOps commit below must not re-trigger the pipeline
   pull_request:
     branches: [main]
 env:
   REGISTRY: ghcr.io
+  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/taskboard-backend
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/taskboard-frontend
+
 jobs:
+  # 1. Build & Test
   test:
     runs-on: ubuntu-latest
     steps:
@@ -15,65 +22,102 @@ jobs:
         with: {python-version: '3.12'}
       - name: Install backend dependencies
         run: pip install -r requirements.txt
-        working-directory: backend
-      - name: Run backend tests
-        run: pytest -q
-        working-directory: backend
+        working-directory: application/backend
+      - name: Run backend tests (pipeline stops if any test fails)
+        run: pytest -v
+        working-directory: application/backend
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - name: Build frontend
         run: npm install && npm run build
-        working-directory: frontend
+        working-directory: application/frontend
+
+  # 2. Security gates - each job fails the pipeline on a finding
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}            # scan the whole git history
+      - uses: gitleaks/gitleaks-action@v2
+        env: {GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'}
+
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Bandit (Python SAST) - fail on MEDIUM or HIGH
+        run: pip install bandit && bandit -r application/backend/app -ll
+
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivy dependency scan (requirements.txt)
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: fs
+          scan-ref: application
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: npm audit (frontend packages)
+        run: npm install && npm audit --audit-level=high
+        working-directory: application/frontend
+
+  # 3. Docker build -> image scan -> push to GHCR (tag = commit SHA)
   build-scan-push:
-    needs: test
+    needs: [test, secret-scan, sast, sca]
     runs-on: ubuntu-latest
     permissions: {contents: read, packages: write}
     steps:
       - uses: actions/checkout@v4
+      - name: Build images
+        run: |
+          docker build -t $BACKEND_IMAGE:${{ github.sha }} application/backend
+          docker build -t $FRONTEND_IMAGE:${{ github.sha }} application/frontend
+      - name: Trivy scan backend image (gate)
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+      - name: Trivy scan frontend image (gate)
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
       - uses: docker/login-action@v3
+        if: github.event_name == 'push'
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build images
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/taskboard-backend:${{ github.sha }} ./backend
-          docker build -t ghcr.io/${{ github.repository_owner }}/taskboard-frontend:${{ github.sha }} ./frontend
-      - name: Scan backend
-        uses: aquasecurity/trivy-action@0.30.0
-        with:
-          image-ref: ghcr.io/${{ github.repository_owner }}/taskboard-backend:${{ github.sha }}
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: '1'
-      - name: Scan frontend
-        uses: aquasecurity/trivy-action@0.30.0
-        with:
-          image-ref: ghcr.io/${{ github.repository_owner }}/taskboard-frontend:${{ github.sha }}
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: '1'
       - name: Push images
+        if: github.event_name == 'push'
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/taskboard-backend:${{ github.sha }}
-          docker push ghcr.io/${{ github.repository_owner }}/taskboard-frontend:${{ github.sha }}
-  deploy:
-    if: github.ref == 'refs/heads/main'
+          docker push $BACKEND_IMAGE:${{ github.sha }}
+          docker push $FRONTEND_IMAGE:${{ github.sha }}
+
+  # 4. Kubernetes deployment the GitOps way:
+  #    CI only writes the new image tag into Git. Argo CD sees the commit and syncs the cluster.
+  gitops-deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build-scan-push
     runs-on: ubuntu-latest
-    permissions: {contents: read, packages: read}
+    permissions: {contents: write}
     steps:
       - uses: actions/checkout@v4
-      - uses: azure/setup-helm@v4
-      - name: Configure kubectl
-        env: {KUBE_CONFIG_DATA: '${{ secrets.KUBE_CONFIG_DATA }}'}
+      - name: Update image tags in gitops/values-gitops.yaml
         run: |
-          mkdir -p ~/.kube
-          echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
-      - name: Deploy with Helm
-        run: |
-          helm upgrade --install taskboard ./helm/taskboard -n taskboard --create-namespace \
-            --set backend.tag=${{ github.sha }} \
-            --set frontend.tag=${{ github.sha }} \
-            --set backend.image=ghcr.io/${{ github.repository_owner }}/taskboard-backend \
-            --set frontend.image=ghcr.io/${{ github.repository_owner }}/taskboard-frontend
+          sed -i "s|^  tag: .*|  tag: ${{ github.sha }}|" gitops/values-gitops.yaml
+          git config user.name  "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git commit -am "gitops: deploy ${{ github.sha }}"
+          git push

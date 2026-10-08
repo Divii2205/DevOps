@@ -10,20 +10,35 @@ spec:
     metadata:
       labels: {app: taskboard-backend}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
         - name: backend
           image: "{{ .Values.backend.image }}:{{ .Values.backend.tag }}"
+          imagePullPolicy: IfNotPresent
           ports: [{containerPort: 8000}]
+          # non-secret settings come from the ConfigMap
+          envFrom:
+            - configMapRef: {name: taskboard-config}
+          # the DB connection string (has the password) comes from the Secret
           env:
             - name: DATABASE_URL
-              value: "postgresql+psycopg://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@{{ .Values.postgres.host }}:5432/{{ .Values.postgres.database }}"
+              valueFrom: {secretKeyRef: {name: taskboard-postgres, key: database-url}}
+          # startup: give migrations + uvicorn up to 150s; liveness only starts after this passes
+          startupProbe:
+            httpGet: {path: /health, port: 8000}
+            periodSeconds: 5
+            failureThreshold: 30
+            timeoutSeconds: 3
           readinessProbe:
             httpGet: {path: /ready, port: 8000}
-            initialDelaySeconds: 10
             periodSeconds: 10
+            timeoutSeconds: 3
           livenessProbe:
             httpGet: {path: /health, port: 8000}
-            initialDelaySeconds: 20
             periodSeconds: 15
+            timeoutSeconds: 3
           resources:
 {{ toYaml .Values.resources | indent 12 }}

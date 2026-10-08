@@ -1,0 +1,17 @@
+2026-10-08T07:23:04Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-08T07:23:04Z	WARN	[pip] Unable to find python `site-packages` directory. License detection is skipped.	err="unable to find path to Python executable"
+2026-10-08T07:23:04Z	INFO	Number of language-specific files	num=1
+2026-10-08T07:23:04Z	INFO	[pip] Detecting vulnerabilities...
+
+Report Summary
+
+┌──────────────────────────┬──────┬─────────────────┐
+│          Target          │ Type │ Vulnerabilities │
+├──────────────────────────┼──────┼─────────────────┤
+│ backend/requirements.txt │ pip  │        0        │
+└──────────────────────────┴──────┴─────────────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+exit code: 0

@@ -1,0 +1,17 @@
+# Desired state for the cluster. CI (gitops-deploy job) writes the new commit SHA here,
+# Argo CD sees the Git change and runs the Helm upgrade for us.
+frontend:
+  image: ghcr.io/divii2205/taskboard-frontend
+  tag: latest
+backend:
+  image: ghcr.io/divii2205/taskboard-backend
+  tag: latest
+replicaCount: 2
+ingress:
+  enabled: true
+  host: taskboard.local
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 60

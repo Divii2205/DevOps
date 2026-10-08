@@ -1,0 +1,5 @@
+# Copy to terraform.tfvars and change if needed.
+# Never put AWS keys here - use `aws configure` / environment variables instead.
+aws_region   = "ap-south-1"
+cluster_name = "taskboard-eks"
+environment  = "dev"

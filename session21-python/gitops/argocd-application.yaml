@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: taskboard
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Divii2205/final-devops-project.git
+    targetRevision: main
+    path: helm/taskboard
+    helm:
+      releaseName: taskboard
+      valueFiles:
+        - ../../gitops/values-gitops.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: taskboard
+  syncPolicy:
+    automated:
+      prune: true      # delete what was removed from Git
+      selfHeal: true   # undo manual kubectl changes
+    syncOptions:
+      - CreateNamespace=true
